@@ -1,4 +1,4 @@
-# Open-source-project
+# Spotidata
 
 ## About the project
 
