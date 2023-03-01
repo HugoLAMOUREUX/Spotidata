@@ -1,1 +1,7 @@
 
+# Spotidata contributing guidelines
+We appreciate your contributions via issues and pull requests. Note that the code of conduct applies to all interactions with the Spotidata project, including issues and pull requests.
+
+When submitting pull requests, please follow the style guidelines of the project, ensure that your code is tested and documented, and write good commit messages, e.g., following these guidelines.
+
+By submitting a pull request, you are licensing your code under the project license and affirming that you either own copyright (automatic for most individuals) or are authorized to distribute under the project license (e.g., in case your employer retains copyright on your work).
