@@ -57,11 +57,11 @@ Don't forget to give the project a star! Thanks again!
 
 <br>
 
-For further informations, please go to [CONTRIBUTING.md](https://github.com/HugoLAMOUREUX/Open-source-project/blob/main/CONTRIBUTING.md)
+For further informations, please go to [CONTRIBUTING.md](https://github.com/HugoLAMOUREUX/Spotidata/blob/main/CONTRIBUTING.md)
 
 ## License
 
-Distributed under the MIT License. See [LICENSE.txt](https://github.com/HugoLAMOUREUX/Open-source-project/blob/main/LICENSE.txt) for more information.
+Distributed under the MIT License. See [LICENSE.txt](https://github.com/HugoLAMOUREUX/Spotidata/blob/main/LICENSE.txt) for more information.
 
 ## Contact
 
@@ -71,7 +71,7 @@ Charly FLU - charly.flu.67@gmail.com
 
 Antoine GERMON - antoine.germon67@gmail.com
 
-Project Link: [https://github.com/HugoLAMOUREUX/Open-source-project](https://github.com/HugoLAMOUREUX/Open-source-project)
+Project Link: [https://github.com/HugoLAMOUREUX/Spotidata](https://github.com/HugoLAMOUREUX/Spotidata)
 
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
