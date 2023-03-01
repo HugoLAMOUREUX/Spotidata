@@ -17,6 +17,12 @@ Back end built with Node.Js, Front end with React.Js
 
 ### Prerequesites
 
+* npm
+
+```sh
+npm install npm@latest -g
+```
+
 ### Installation
 
 1. Clone the repository
@@ -24,7 +30,15 @@ Back end built with Node.Js, Front end with React.Js
 git clone https://github.com/HugoLAMOUREUX/Open-source-project
 ```
 
-2.
+2. Go to the back-end folder
+```sh
+cd back
+```
+
+3. Launch the back-end
+```sh
+npm start
+```
 
 ## Contributing
 
