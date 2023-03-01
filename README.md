@@ -30,7 +30,7 @@ npm install npm@latest -g
 git clone https://github.com/HugoLAMOUREUX/Open-source-project
 ```
 
-2. Go to the back-end folder
+2. Open a terminal in the repository and go to the back-end folder
 ```sh
 cd back
 ```
