@@ -6,12 +6,14 @@ Web applications linked to spotify that shows some statistics about your music t
 
 ### Built with
 
-Back end built with Node.Js, Front end with React.Js
+Back end built with Node.Js, Front end with React.Js<br>
+Unit testing with Jest
 
 [![React][React.js]][React-url]
 
 [![Node][Node.js]][Node-url]
 
+[![Jest][Jest.js]][Jest-url]
 
 ## Getting started
 
@@ -75,3 +77,5 @@ Project Link: [https://github.com/HugoLAMOUREUX/Open-source-project](https://git
 [React-url]: https://reactjs.org/
 [Node.js]: https://img.shields.io/badge/node.js-20232A?style=for-the-badge&logo=nodedotjs&logoColor=#80e329
 [Node-url]: https://nodejs.org/en/
+[Jest.js]: https://img.shields.io/badge/jest-20232A?style=for-the-badge&logo=jest&logoColor=a74b59 
+[Jest-url]: https://jestjs.io/
