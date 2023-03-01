@@ -29,7 +29,7 @@ npm install npm@latest -g
 
 1. Clone the repository
 ```sh
-git clone https://github.com/HugoLAMOUREUX/Open-source-project
+git clone https://github.com/HugoLAMOUREUX/Spotidata
 ```
 
 2. Open a terminal in the repository and go to the back-end folder
