@@ -32,7 +32,7 @@ npm install npm@latest -g
 git clone https://github.com/HugoLAMOUREUX/Spotidata
 ```
 
-2. Add the .env file in the back repository : create a config repository under the back repository and fill the file as follows :
+2. Add the .env file in the back repository : create a config repository under the back repository and in this config create a .env file as follows :
 ```
 NODE_ENV= development
 PORT = 5000
