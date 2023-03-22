@@ -76,7 +76,7 @@ const TopTabs = () => {
     ],
   });
   return (
-    <div className="w-full max-w-screen-lg px-2 py-16">
+    <div className="w-full max-w-screen-lg px-2 py-8">
       <Tab.Group>
         <Tab.List className="flex space-x-0.1 rounded-xl bg-gray">
           {Object.keys(categories).map((category) => (
