@@ -1,18 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import "./App.css";
+import Home from "./pages/Home";
+import Connected from "./pages/Connected";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import UserContextProvider from "./components/UserContextProvider";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <div className="bg-black min-h-screen m-0 p-0 flex items-center flex-col pt-10">
-      <h1 className="text-green text-3xl font-bold ">
-      Spotidata
-    </h1>
-    </div>
-  )
+    <UserContextProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home></Home>} exact></Route>
+          <Route
+            path="/callback"
+            element={<Connected></Connected>}
+            exact
+          ></Route>
+
+          <Route path="/*" element={<Home />}></Route>
+        </Routes>
+      </BrowserRouter>
+    </UserContextProvider>
+  );
 }
 
-
-export default App
+export default App;
