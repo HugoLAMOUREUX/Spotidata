@@ -14,14 +14,10 @@ const Login = () => {
 
   // when the login to Spotify button is clicked, redirect to the spotify login page
   const handleClick = () => {
-    var stateKey = "spotify_auth_state";
-
     var client_id = "871c09e08e6e47e29036704256543a4a"; // Your client id
     var redirect_uri = "http://localhost:5173/callback"; // Your redirect uri
 
     var state = generateRandomString(16);
-
-    localStorage.setItem(stateKey, state);
     var scope = "user-read-private user-read-email user-top-read";
 
     var url = "https://accounts.spotify.com/authorize";
