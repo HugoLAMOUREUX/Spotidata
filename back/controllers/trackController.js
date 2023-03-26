@@ -5,15 +5,16 @@ const dotenv = require("dotenv").config({ path: "../config/.env" });
 
         API SPOTIFY TEST with Client credentials
 https://developer.spotify.com/documentation/general/guides/authorization/
-
-
+*/
+/*
 // Create the api object with the credentials
 var spotifyApi = new SpotifyWebApi({
   clientId: process.env.CLIENTID,
   clientSecret: process.env.CLIENTSECRET,
 });
 
-// Retrieve an access token.
+
+ //Retrieve an access token.
 spotifyApi.clientCredentialsGrant().then(
   function (data) {
     console.log("The access token expires in " + data.body["expires_in"]);
@@ -42,7 +43,6 @@ spotifyApi.clientCredentialsGrant().then(
 );
 
         API TEST SPOTIFY END
-
 */
 
 /*      
