@@ -9,9 +9,12 @@ const app = express();
 //to pass data in the body : middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
+ 
 //add the routes related to tracks
 app.use("/api/spotify", require("./routes/trackRoute"));
+
+//add the routes related to playlists
+app.use("/api/spotify", require("./routes/playlistRoute"));
 
 //to see the error messages
 app.use(errorHandler);
