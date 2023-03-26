@@ -6,7 +6,7 @@ Web application linked to spotify that shows some statistics about your music ta
 
 ### Built with
 
-Back end built with Node.Js, Front end with React.Js<br>
+Back end built with Node.Js and the framework Express, Front end with React.Js<br>
 Unit testing with Jest
 
 [![React][React.js]][React-url]
