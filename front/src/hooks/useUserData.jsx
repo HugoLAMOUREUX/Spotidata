@@ -43,8 +43,10 @@ const useUserData = () => {
       setState(state);
     } else {
       //if the user has refused the connexion, redirect to the home page
-      alert("There was an error during the authentication");
-      navigate("/");
+      if (accessToken === "") {
+        alert("There was an error during the authentication");
+        navigate("/");
+      }
     }
   };
   return { updateToken };
