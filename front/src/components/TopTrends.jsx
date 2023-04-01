@@ -8,7 +8,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const TopTabs = () => {
+const TopTrends = () => {
   let [categories] = useState({
     Tracks: [
       {
@@ -122,4 +122,4 @@ const TopTabs = () => {
   );
 };
 
-export default TopTabs;
+export default TopTrends;
