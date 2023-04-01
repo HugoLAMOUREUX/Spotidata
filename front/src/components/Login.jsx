@@ -18,7 +18,7 @@ const Login = () => {
     var redirect_uri = "http://localhost:5173/callback"; // Your redirect uri
 
     var state = generateRandomString(16);
-    var scope = "user-read-private user-read-email user-top-read";
+    var scope = "user-read-private user-read-email user-top-read playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public";
 
     var url = "https://accounts.spotify.com/authorize";
     url += "?response_type=token";
