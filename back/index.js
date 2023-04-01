@@ -1,5 +1,6 @@
 const express = require("express");
 const colors = require("colors");
+const cors = require("cors");
 const dotenv = require("dotenv").config({ path: "./config/.env" });
 const { errorHandler } = require("./middlewares/errorMiddleware");
 const port = process.env.PORT || 5000;
@@ -9,7 +10,8 @@ const app = express();
 //to pass data in the body : middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
- 
+//middleware to allow access control allow origin
+app.use(cors());
 //add the routes related to tracks
 app.use("/api/spotify", require("./routes/trackRoute"));
 

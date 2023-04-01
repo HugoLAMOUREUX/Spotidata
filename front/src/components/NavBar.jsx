@@ -13,8 +13,8 @@ const NavBar = () => {
       ].map(([title, url]) => {
         return (
           <NavLink
-            exact
             to={url}
+            key={title}
             className={({ isActive }) =>
               isActive
                 ? `p-5 text-lightgray text-l font-bold`
