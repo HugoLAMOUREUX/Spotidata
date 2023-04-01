@@ -9,27 +9,35 @@ import Trends from "./pages/Trends";
 import Tops from "./pages/tops";
 import Analysis from "./pages/Analysis";
 import Playlists from "./pages/Playlists";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
+  const client = new QueryClient();
   return (
-    <UserContextProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home></Home>} exact></Route>
-          <Route path="/callback" element={<Summary></Summary>} exact></Route>
-          <Route path="/trends" element={<Trends></Trends>} exact></Route>
-          <Route path="/tops" element={<Tops></Tops>} exact></Route>
-          <Route path="/analysis" element={<Analysis></Analysis>} exact></Route>
-          <Route
-            path="/playlists"
-            element={<Playlists></Playlists>}
-            exact
-          ></Route>
+    <QueryClientProvider client={client}>
+      <UserContextProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home></Home>} exact></Route>
+            <Route path="/callback" element={<Summary></Summary>} exact></Route>
+            <Route path="/trends" element={<Trends></Trends>} exact></Route>
+            <Route path="/tops" element={<Tops></Tops>} exact></Route>
+            <Route
+              path="/analysis"
+              element={<Analysis></Analysis>}
+              exact
+            ></Route>
+            <Route
+              path="/playlists"
+              element={<Playlists></Playlists>}
+              exact
+            ></Route>
 
-          <Route path="/*" element={<Home />}></Route>
-        </Routes>
-      </BrowserRouter>
-    </UserContextProvider>
+            <Route path="/*" element={<Home />}></Route>
+          </Routes>
+        </BrowserRouter>
+      </UserContextProvider>
+    </QueryClientProvider>
   );
 }
 

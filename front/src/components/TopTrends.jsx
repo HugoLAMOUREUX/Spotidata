@@ -24,25 +24,25 @@ const TopTrends = () => {
         artist: "Martin Garrix",
       },
       {
-        id: 1,
+        id: 3,
         title: "Scared to be lonely",
         img: "",
         artist: "Martin Garrix",
       },
       {
-        id: 2,
+        id: 4,
         title: "Glitch",
         img: "",
         artist: "Martin Garrix",
       },
       {
-        id: 1,
+        id: 5,
         title: "Scared to be lonely",
         img: "",
         artist: "Martin Garrix",
       },
       {
-        id: 2,
+        id: 6,
         title: "Glitch",
         img: "",
         artist: "Martin Garrix",
@@ -108,9 +108,9 @@ const TopTrends = () => {
               <ul>
                 {posts.map((post) =>
                   idx == 1 ? (
-                    <ArtistCard post={post}></ArtistCard>
+                    <ArtistCard key={post.id} post={post}></ArtistCard>
                   ) : (
-                    <TrackCard post={post}></TrackCard>
+                    <TrackCard key={post.id} post={post}></TrackCard>
                   )
                 )}
               </ul>
