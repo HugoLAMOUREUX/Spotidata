@@ -7,7 +7,7 @@ const getPlaylistTracks = async (req,res) => {
     // Get tracks in an album
 
     const spotifyApi = new SpotifyWebApi({
-        accessToken: req.body.access_token
+        accessToken: "BQDUFOi1mJEkabMtySpzg_N4yIL83aCqqBYbsL_6bEI8uEptm8DRdO1RmOHZruWNC8yCaWJ1tLOzKW5CIBU5VRRkOxNvVilnVfmezs-ftjdm8yufyNzh3ckwuKchMHXnEJQJe9QlM4-HTSfX1B_Z43uMIhkqKy2ET-RdoyCHgjNwo2boc9OvIovjb56S5ujhvPcZKk5V3ss6YPOQfgi37AmJKIsfCBL6uQReUdFxEPqmIAogCeVtfbOX9B9eGTH1RFjucpp3LxgwErnBuogS1Q6Ejf4Ipg"
     });
     spotifyApi.getPlaylistTracks(req.body.playlist_id, { limit : 50, offset : 1 })
     .then(function(data) {
@@ -130,5 +130,9 @@ const getUserPlaylists = async (req, res) => {
     });
 }
 
+const getPlaylistDetails = async (req, res) => {
+    //in progress
+};
 
-module.exports = { getTopTrends, getPlaylistTracks, getUserPlaylists };
+
+module.exports = { getTopTrends, getPlaylistTracks, getUserPlaylists, getPlaylistDetails };
