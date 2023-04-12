@@ -65,4 +65,57 @@ const getTrackInfo = (req, res) => {
   res.status(200).json({ test: "ok" });
 };
 
-module.exports = { getTrackInfo };
+const getTrackDetails = async (spotifyApi, track_id) => {
+  let return_value;
+  await spotifyApi.getAudioFeaturesForTrack(track_id).then(
+    function (data) {
+      //delete the data that we don't need
+      if(data.body.type){
+        delete data.body.type;
+      }
+      if(data.body.uri){
+        delete data.body.uri;
+      }
+      if(data.body.track_href){
+        delete data.body.track_href;
+      }
+      if(data.body.analysis_url){
+        delete data.body.analysis_url;
+      }
+      if(data.body.id){
+        delete data.body.id;
+      }
+
+      return_value = data.body;
+    },
+    function (err) {
+      console.log(err);
+      return -1;
+    }
+  );
+
+
+  await spotifyApi.getTrack(track_id).then(
+    function (data_more_info) {
+      //add the data that we need
+      if(data_more_info.body.album && data_more_info.body.album.genres){
+        return_value.genres = data_more_info.body.album.genres;
+      }
+      if(data_more_info.body.popularity){
+        return_value.popularity = data_more_info.body.popularity;
+      }
+      if(data_more_info.body.artists){
+        return_value.artists = data_more_info.body.artists.map((artist) => {
+          return {name: artist.name, id: artist.id};
+        });
+      }
+    },
+      function (err) {
+        console.log("Something went wrong when retrieving the tracks", err);
+      }
+  );
+
+  return return_value;
+};
+
+module.exports = { getTrackInfo, getTrackDetails };
