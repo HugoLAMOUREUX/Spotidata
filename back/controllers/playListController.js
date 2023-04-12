@@ -4,17 +4,6 @@ const dotenv = require("dotenv").config({ path: "../config/.env" });
 const getPlaylistTracks = async (req, res) => {
   // Get tracks in an album
 
-<<<<<<< HEAD
-
-const getPlaylistTracks = async (req,res) => {
-    // Get tracks in an album
-
-    const spotifyApi = new SpotifyWebApi({
-        accessToken: "BQDUFOi1mJEkabMtySpzg_N4yIL83aCqqBYbsL_6bEI8uEptm8DRdO1RmOHZruWNC8yCaWJ1tLOzKW5CIBU5VRRkOxNvVilnVfmezs-ftjdm8yufyNzh3ckwuKchMHXnEJQJe9QlM4-HTSfX1B_Z43uMIhkqKy2ET-RdoyCHgjNwo2boc9OvIovjb56S5ujhvPcZKk5V3ss6YPOQfgi37AmJKIsfCBL6uQReUdFxEPqmIAogCeVtfbOX9B9eGTH1RFjucpp3LxgwErnBuogS1Q6Ejf4Ipg"
-    });
-    spotifyApi.getPlaylistTracks(req.body.playlist_id, { limit : 50, offset : 1 })
-    .then(function(data) {
-=======
   const spotifyApi = new SpotifyWebApi({
     accessToken: req.query.access_token,
   });
@@ -22,7 +11,6 @@ const getPlaylistTracks = async (req,res) => {
     .getPlaylistTracks(req.query.playlist_id, { limit: 50, offset: 1 })
     .then(
       function (data) {
->>>>>>> 8421a6a6dced3eeea18e34d8106cbdcbcf85cfe7
         //All this is to clean the data and make it easier to use on the front end
         if (data.body.href) {
           delete data.body.href;
@@ -144,24 +132,8 @@ const getUserPlaylists = async (req, res) => {
   );
 };
 
-<<<<<<< HEAD
-                count++;
-            });
-        }
-        res.status(200).json(data.body);
-    }, function(err) {
-        res.status(400);
-        console.log(err);
-        throw new Error("An error occurred when retrieving the user playlists");
-    });
-}
-
 const getPlaylistDetails = async (req, res) => {
-    //in progress
+  //in progress
 };
 
-
 module.exports = { getTopTrends, getPlaylistTracks, getUserPlaylists, getPlaylistDetails };
-=======
-module.exports = { getTopTrends, getPlaylistTracks, getUserPlaylists };
->>>>>>> 8421a6a6dced3eeea18e34d8106cbdcbcf85cfe7
