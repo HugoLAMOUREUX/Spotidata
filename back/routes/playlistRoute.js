@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { getPlaylistTracks } = require("../controllers/playlistController");
-const { getTopTrends } = require("../controllers/playlistController");
-const { getUserPlaylists } = require("../controllers/playlistController");
-
+const {
+  getPlaylistTracks,
+  getTopTrends,
+  getUserPlaylists,
+} = require("../controllers/playListController");
 
 router.get("/getPlaylistTracks", getPlaylistTracks);
 
