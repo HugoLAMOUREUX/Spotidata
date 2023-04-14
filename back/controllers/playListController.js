@@ -1,14 +1,13 @@
 const SpotifyWebApi = require("spotify-web-api-node");
 const dotenv = require("dotenv").config({ path: "../config/.env" });
+const { getTrackDetails } = require("../controllers/trackController");
 
-const getPlaylistTracks = async (req, res) => {
+
+const getPlaylistTracks = async (spotifyApi, playlist_id) => {
   // Get tracks in an album
 
-  const spotifyApi = new SpotifyWebApi({
-    accessToken: req.query.access_token,
-  });
-  spotifyApi
-    .getPlaylistTracks(req.query.playlist_id, { limit: 50, offset: 1 })
+  return await spotifyApi
+    .getPlaylistTracks(playlist_id, { limit: 50, offset: 1 })
     .then(
       function (data) {
         //All this is to clean the data and make it easier to use on the front end
@@ -41,7 +40,6 @@ const getPlaylistTracks = async (req, res) => {
             if (item.track && item.track.images) {
               item.images = item.track.images;
             }
-
             if (item.added_at) {
               delete item.added_at;
             }
@@ -54,14 +52,11 @@ const getPlaylistTracks = async (req, res) => {
             if (item.video_thumbnail) {
               delete item.video_thumbnail;
             }
-
             if (item.track && item.track.artists) {
-              //create a new array of artists with the name and id in item.track.artists
               item.artists = item.track.artists.map((artist) => {
                 return { name: artist.name, id: artist.id };
               });
             }
-
             if (item.track && item.track.album && item.track.album.images) {
               item.img = item.track.album.images;
             }
@@ -71,11 +66,12 @@ const getPlaylistTracks = async (req, res) => {
             count++;
           });
         }
-        res.status(200).json(data.body);
+
+        return data.body;
       },
       function (err) {
-        res.status(400);
         console.log(err);
+        return -1;
       }
     );
 };
@@ -84,7 +80,34 @@ const getTopTrends = async (req, res) => {
   //get the tracks from the top 50 songs on spotify
   const topSongSpotifyPlaylistId = "37i9dQZEVXbMDoHDwVN2tF";
   req.query.playlist_id = topSongSpotifyPlaylistId;
-  getPlaylistTracks(req, res);
+
+  //get the token of the app for doing the request for getting a public access token
+  const spotifyApi = new SpotifyWebApi({
+    clientId: process.env.CLIENTID,
+    clientSecret: process.env.CLIENTSECRET,
+  });
+
+  //getting the public access token
+  spotifyApi.clientCredentialsGrant().then(
+    function (data) { 
+      // set the access token
+      spotifyApi.setAccessToken(data.body["access_token"]);  
+
+      //get the tracks from the top 50 songs on spotify
+      getPlaylistTracks(spotifyApi, req.query.playlist_id).then( 
+        function (data) { 
+          res.status(200).json(data);
+      },
+      function (err) {
+        console.log("Something went wrong when retrieving the tracks", err);
+      }
+    );
+
+    },
+    function (err) {
+      console.log("Something went wrong when retrieving an access token", err);
+    }
+  );
 };
 
 const getUserPlaylists = async (req, res) => {
@@ -132,4 +155,91 @@ const getUserPlaylists = async (req, res) => {
   );
 };
 
-module.exports = { getTopTrends, getPlaylistTracks, getUserPlaylists };
+const getPlaylistDetails = async (req, res) => {
+
+  const spotifyApi = new SpotifyWebApi({
+    accessToken: req.query.access_token,
+  });
+
+  let return_value = {};
+  return_value.mean_danceability = 0.0;
+  return_value.mean_energy = 0.0;
+  return_value.mean_loudness = 0;
+  return_value.mean_speechiness = 0;
+  return_value.mean_acousticness = 0;
+  return_value.mean_instrumentalness = 0;
+  return_value.mean_liveness = 0;
+  return_value.mean_valence = 0;
+  return_value.mean_tempo = 0;
+  return_value.mean_time_signature = 0;
+  return_value.mean_key = 0;
+  return_value.mean_mode = 0;
+  return_value.mean_duration_ms = 0;
+  let count = 0;
+
+  const test_wait = new Promise((resolve, reject) => {
+    getPlaylistTracks(spotifyApi, req.query.playlist_id).then( 
+      function (data) { 
+        if (data && data.items) {
+          data.items.forEach((item) => {
+            if(item.track_id){
+              //for each track get the details and add them to the return value
+              getTrackDetails(spotifyApi, item.track_id).then(
+                function (data_track) {
+                  return_value.mean_danceability += data_track.danceability;
+                  return_value.mean_energy += data_track.energy;
+                  return_value.mean_loudness += data_track.loudness;
+                  return_value.mean_speechiness += data_track.speechiness;
+                  return_value.mean_acousticness += data_track.acousticness;
+                  return_value.mean_instrumentalness += data_track.instrumentalness;
+                  return_value.mean_liveness += data_track.liveness;
+                  return_value.mean_valence += data_track.valence;
+                  return_value.mean_tempo += data_track.tempo;
+                  return_value.mean_time_signature += data_track.time_signature;
+                  return_value.mean_key += data_track.key;
+                  return_value.mean_mode += data_track.mode;
+                  return_value.mean_duration_ms += data_track.duration_ms;
+                  
+                  count++;
+                  if(count>=data.total || count>=50){
+                    resolve();
+                  }
+                }
+              );
+                
+            }
+          });
+        }
+      },
+      function (err) {
+        console.log("Something went wrong when retrieving the tracks", err);
+        reject();
+      }
+    );
+
+    
+  });
+
+
+
+  test_wait.then(() => {
+    //divide by count to get the mean
+    return_value.mean_danceability = return_value.mean_danceability / count;
+    return_value.mean_energy = return_value.mean_energy / count;
+    return_value.mean_loudness = return_value.mean_loudness / count;
+    return_value.mean_speechiness = return_value.mean_speechiness / count;
+    return_value.mean_acousticness = return_value.mean_acousticness / count;
+    return_value.mean_instrumentalness = return_value.mean_instrumentalness / count;
+    return_value.mean_liveness = return_value.mean_liveness / count;
+    return_value.mean_valence = return_value.mean_valence / count;
+    return_value.mean_tempo = return_value.mean_tempo / count;
+    return_value.mean_time_signature = return_value.mean_time_signature / count;
+    return_value.mean_key = return_value.mean_key / count;
+    return_value.mean_mode = return_value.mean_mode / count;
+    return_value.mean_duration_ms = return_value.mean_duration_ms / count;
+
+    res.status(200).json(return_value);
+  });
+};
+
+module.exports = { getTopTrends, getUserPlaylists, getPlaylistDetails };
