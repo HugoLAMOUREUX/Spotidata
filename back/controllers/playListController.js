@@ -3,11 +3,11 @@ const dotenv = require("dotenv").config({ path: "../config/.env" });
 const { getTrackDetails } = require("../controllers/trackController");
 
 
-const getPlaylistTracks = async (spotifyApi, playlist_id) => {
+const getPlaylistTracks = async (spotifyApi, playlist_id, size, offset_value) => {
   // Get tracks in an album
 
   return await spotifyApi
-    .getPlaylistTracks(playlist_id, { limit: 50, offset: 1 })
+    .getPlaylistTracks(playlist_id, { limit: size, offset: offset_value })
     .then(
       function (data) {
         //All this is to clean the data and make it easier to use on the front end
@@ -65,6 +65,7 @@ const getPlaylistTracks = async (spotifyApi, playlist_id) => {
 
             count++;
           });
+          data.body.nbr_tracks = count-1;
         }
 
         return data.body;
@@ -94,7 +95,7 @@ const getTopTrends = async (req, res) => {
       spotifyApi.setAccessToken(data.body["access_token"]);  
 
       //get the tracks from the top 50 songs on spotify
-      getPlaylistTracks(spotifyApi, req.query.playlist_id).then( 
+      getPlaylistTracks(spotifyApi, req.query.playlist_id, 50, 0).then( 
         function (data) { 
           res.status(200).json(data);
       },
@@ -116,7 +117,7 @@ const getUserPlaylists = async (req, res) => {
   });
 
   // Get the 50 first playlists of the user
-  spotifyApi.getUserPlaylists({ limit: 50, offset: 1 }).then(
+  spotifyApi.getUserPlaylists({ limit: 50, offset: 0 }).then(
     function (data) {
       if (data.body.href) {
         delete data.body.href;
@@ -156,10 +157,11 @@ const getUserPlaylists = async (req, res) => {
 };
 
 const getPlaylistDetails = async (req, res) => {
-
+  //accessToken: req.query.access_token,
   const spotifyApi = new SpotifyWebApi({
-    accessToken: req.query.access_token,
+    accessToken : "BQAw3nJ4HqWYddjELOPjfdzOh5qPoEspCTiV2_svLQ24oK12j9LFSGX0RWCdv85cC47yFxDp6GAuzPc7SJJvCRrP0TZ4WU9TDyalXc3c8ZZAW39B3U517mu_0i5V9v6pbYFvaMkheMjAz0JqCjxWwcPU3Uavj5orBmoDUmi65OtRpwFTI8ceK2d3ZaIA3aWSdncaAR_5oAEFDRT2daAJvayLl0TyCuK4jtcSF9dbwLyBqEEWGxwVbk5aSRGM_i_9FB1rVdfKU58SyKwTbl9pXDi2If8zFQ",
   });
+  req.query.playlist_id="5qbWFVi6ApPvKysDdsZvdw";
 
   let return_value = {};
   return_value.mean_danceability = 0.0;
@@ -177,13 +179,15 @@ const getPlaylistDetails = async (req, res) => {
   return_value.mean_duration_ms = 0;
   let count = 0;
 
-  const test_wait = new Promise((resolve, reject) => {
-    getPlaylistTracks(spotifyApi, req.query.playlist_id).then( 
+  const wait_for_loop = new Promise((resolve, reject) => {
+    getPlaylistTracks(spotifyApi, req.query.playlist_id, 50, 0).then( 
       function (data) { 
+        console.log(data.total);
         if (data && data.items) {
+          
+          //for each track get the details and add them to the return value
           data.items.forEach((item) => {
             if(item.track_id){
-              //for each track get the details and add them to the return value
               getTrackDetails(spotifyApi, item.track_id).then(
                 function (data_track) {
                   return_value.mean_danceability += data_track.danceability;
@@ -199,9 +203,9 @@ const getPlaylistDetails = async (req, res) => {
                   return_value.mean_key += data_track.key;
                   return_value.mean_mode += data_track.mode;
                   return_value.mean_duration_ms += data_track.duration_ms;
-                  
                   count++;
                   if(count>=data.total || count>=50){
+                    console.log("Got here with count: " + count + " and total: " + data.total + "and nbr_tracks"+data.nbr_tracks);
                     resolve();
                   }
                 }
@@ -222,7 +226,7 @@ const getPlaylistDetails = async (req, res) => {
 
 
 
-  test_wait.then(() => {
+  wait_for_loop.then(() => {
     //divide by count to get the mean
     return_value.mean_danceability = return_value.mean_danceability / count;
     return_value.mean_energy = return_value.mean_energy / count;
