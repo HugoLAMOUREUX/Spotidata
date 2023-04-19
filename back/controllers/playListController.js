@@ -1,6 +1,6 @@
 const SpotifyWebApi = require("spotify-web-api-node");
 const dotenv = require("dotenv").config({ path: "../config/.env" });
-const { getTrackDetails } = require("../controllers/trackController");
+const { getTracksDetails } = require("../controllers/trackController");
 
 
 const getPlaylistTracks = async (spotifyApi, playlist_id, size, offset_value) => {
@@ -65,7 +65,7 @@ const getPlaylistTracks = async (spotifyApi, playlist_id, size, offset_value) =>
 
             count++;
           });
-          data.body.nbr_tracks = count-1;
+          
         }
 
         return data.body;
@@ -159,10 +159,11 @@ const getUserPlaylists = async (req, res) => {
 const getPlaylistDetails = async (req, res) => {
   //accessToken: req.query.access_token,
   const spotifyApi = new SpotifyWebApi({
-    accessToken : "BQAw3nJ4HqWYddjELOPjfdzOh5qPoEspCTiV2_svLQ24oK12j9LFSGX0RWCdv85cC47yFxDp6GAuzPc7SJJvCRrP0TZ4WU9TDyalXc3c8ZZAW39B3U517mu_0i5V9v6pbYFvaMkheMjAz0JqCjxWwcPU3Uavj5orBmoDUmi65OtRpwFTI8ceK2d3ZaIA3aWSdncaAR_5oAEFDRT2daAJvayLl0TyCuK4jtcSF9dbwLyBqEEWGxwVbk5aSRGM_i_9FB1rVdfKU58SyKwTbl9pXDi2If8zFQ",
+    accessToken : "BQAy1iI8_DegEOhDyOulXi5V8fw3YBYvjtKf5ykbEb11D-Mido-cpvd_i1Tnfq6bdIwhA9CKGGfPaiOsOinAqDrnajkfD0MrT2seSJwLTbFDkiYA7P9XMNa39v0VmyhTGM5ysdTTA8EQvfgy_1x8upoULwEDMHpkltHgsIYhztqqYtVvKARjGh6k7NLFGO1V2kk5oIOdBkwFheFESPmNQrnupJqkaGW8jtR3CTAL-etJkmXBZOtAylTwKNVJ5ZX5QcgH6K582jfvKAO981yJPHgtBUAbbw",
   });
-  req.query.playlist_id="5qbWFVi6ApPvKysDdsZvdw";
+  req.query.playlist_id="2WYhlTlaIZ0I4pQ2JeqU99";
 
+  //set all default values to 0
   let return_value = {};
   return_value.mean_danceability = 0.0;
   return_value.mean_energy = 0.0;
@@ -177,73 +178,94 @@ const getPlaylistDetails = async (req, res) => {
   return_value.mean_key = 0;
   return_value.mean_mode = 0;
   return_value.mean_duration_ms = 0;
-  let count = 0;
+  return_value.mean_popularity = 0;
+  return_value.nbr_tracks_audio_ft = 0;
+  return_value.nbr_tracks_get_norm = 0;
+  return_value.nbr_tracks = 0;
+  return_value.genres = {};
+  return_value.artists = {};
 
-  const wait_for_loop = new Promise((resolve, reject) => {
-    getPlaylistTracks(spotifyApi, req.query.playlist_id, 50, 0).then( 
-      function (data) { 
-        console.log(data.total);
-        if (data && data.items) {
-          
-          //for each track get the details and add them to the return value
+
+  //is used to store the total number of tracks in the playlist
+  let total;
+  // is used to store temporarly the ids of the tracks that will be used to get the details of the tracks
+  let tracks_ids = []; 
+
+  //get the first 50 track's ids of the playlist
+  await getPlaylistTracks(spotifyApi, req.query.playlist_id, 50, 0).then( 
+    function (data) {
+      total = data.total;
+      data.items.forEach((item) => {
+        tracks_ids.push(item.track_id);
+      }); 
+    }
+  );
+
+
+
+  //get the details of the tracks
+  return_value = await getTracksDetails(spotifyApi, tracks_ids, return_value);
+
+
+  //if there is more tracks to get, get them
+  if(total > 50){
+    for (let i = 0; i < (total-50)/50 ; i++) {
+      tracks_ids = [];
+      await getPlaylistTracks(spotifyApi, req.query.playlist_id, 50, (i+1)*50).then( 
+        function (data) {
           data.items.forEach((item) => {
-            if(item.track_id){
-              getTrackDetails(spotifyApi, item.track_id).then(
-                function (data_track) {
-                  return_value.mean_danceability += data_track.danceability;
-                  return_value.mean_energy += data_track.energy;
-                  return_value.mean_loudness += data_track.loudness;
-                  return_value.mean_speechiness += data_track.speechiness;
-                  return_value.mean_acousticness += data_track.acousticness;
-                  return_value.mean_instrumentalness += data_track.instrumentalness;
-                  return_value.mean_liveness += data_track.liveness;
-                  return_value.mean_valence += data_track.valence;
-                  return_value.mean_tempo += data_track.tempo;
-                  return_value.mean_time_signature += data_track.time_signature;
-                  return_value.mean_key += data_track.key;
-                  return_value.mean_mode += data_track.mode;
-                  return_value.mean_duration_ms += data_track.duration_ms;
-                  count++;
-                  if(count>=data.total || count>=50){
-                    console.log("Got here with count: " + count + " and total: " + data.total + "and nbr_tracks"+data.nbr_tracks);
-                    resolve();
-                  }
-                }
-              );
-                
-            }
-          });
+            tracks_ids.push(item.track_id);
+          }); 
         }
-      },
-      function (err) {
-        console.log("Something went wrong when retrieving the tracks", err);
-        reject();
-      }
-    );
+      );
 
-    
-  });
+      return_value = await getTracksDetails(spotifyApi, tracks_ids, return_value,res);      
+    }
+
+  }
+  
 
 
+  //calculate the mean of each feature
+  return_value.mean_danceability = return_value.mean_danceability / return_value.nbr_tracks_audio_ft;
+  return_value.mean_energy = return_value.mean_energy / return_value.nbr_tracks_audio_ft;
+  return_value.mean_loudness = return_value.mean_loudness / return_value.nbr_tracks_audio_ft;
+  return_value.mean_speechiness = return_value.mean_speechiness / return_value.nbr_tracks_audio_ft;
+  return_value.mean_acousticness = return_value.mean_acousticness / return_value.nbr_tracks_audio_ft;
+  return_value.mean_instrumentalness = return_value.mean_instrumentalness / return_value.nbr_tracks_audio_ft;
+  return_value.mean_liveness = return_value.mean_liveness / return_value.nbr_tracks_audio_ft;
+  return_value.mean_valence = return_value.mean_valence / return_value.nbr_tracks_audio_ft;
+  return_value.mean_tempo = return_value.mean_tempo / return_value.nbr_tracks_audio_ft;
+  return_value.mean_time_signature = return_value.mean_time_signature / return_value.nbr_tracks_audio_ft;
+  return_value.mean_key = return_value.mean_key / return_value.nbr_tracks_audio_ft;
+  return_value.mean_mode = return_value.mean_mode / return_value.nbr_tracks_audio_ft;
+  return_value.mean_duration_ms = return_value.mean_duration_ms / return_value.nbr_tracks_audio_ft;
 
-  wait_for_loop.then(() => {
-    //divide by count to get the mean
-    return_value.mean_danceability = return_value.mean_danceability / count;
-    return_value.mean_energy = return_value.mean_energy / count;
-    return_value.mean_loudness = return_value.mean_loudness / count;
-    return_value.mean_speechiness = return_value.mean_speechiness / count;
-    return_value.mean_acousticness = return_value.mean_acousticness / count;
-    return_value.mean_instrumentalness = return_value.mean_instrumentalness / count;
-    return_value.mean_liveness = return_value.mean_liveness / count;
-    return_value.mean_valence = return_value.mean_valence / count;
-    return_value.mean_tempo = return_value.mean_tempo / count;
-    return_value.mean_time_signature = return_value.mean_time_signature / count;
-    return_value.mean_key = return_value.mean_key / count;
-    return_value.mean_mode = return_value.mean_mode / count;
-    return_value.mean_duration_ms = return_value.mean_duration_ms / count;
+  return_value.mean_popularity = return_value.mean_popularity / return_value.nbr_tracks_get_norm;
 
-    res.status(200).json(return_value);
-  });
+  //delete for more clarity
+  delete return_value.nbr_tracks_audio_ft;
+  delete return_value.nbr_tracks_get_norm;
+
+  return_value.nbr_tracks = total;
+
+  //sort artists by number of tracks they appear in
+  let sorted_artists = Object.keys(return_value.artists).sort(function(a,b){return return_value.artists[b].nbr-return_value.artists[a].nbr})
+  return_value.common_artists = {};
+  //get the 10 most common artists
+  for (let i = 0; i < 10; i++) {
+    if(sorted_artists[i] != undefined){
+      return_value.common_artists[sorted_artists[i]] = return_value.artists[sorted_artists[i]];
+    }
+  }
+
+  delete return_value.artists;
+
+
+
+  res.status(200).json(return_value);
 };
+
+
 
 module.exports = { getTopTrends, getUserPlaylists, getPlaylistDetails };
