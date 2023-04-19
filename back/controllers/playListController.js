@@ -157,11 +157,9 @@ const getUserPlaylists = async (req, res) => {
 };
 
 const getPlaylistDetails = async (req, res) => {
-  //accessToken: req.query.access_token,
   const spotifyApi = new SpotifyWebApi({
-    accessToken : "BQAy1iI8_DegEOhDyOulXi5V8fw3YBYvjtKf5ykbEb11D-Mido-cpvd_i1Tnfq6bdIwhA9CKGGfPaiOsOinAqDrnajkfD0MrT2seSJwLTbFDkiYA7P9XMNa39v0VmyhTGM5ysdTTA8EQvfgy_1x8upoULwEDMHpkltHgsIYhztqqYtVvKARjGh6k7NLFGO1V2kk5oIOdBkwFheFESPmNQrnupJqkaGW8jtR3CTAL-etJkmXBZOtAylTwKNVJ5ZX5QcgH6K582jfvKAO981yJPHgtBUAbbw",
+    accessToken: req.query.access_token,  
   });
-  req.query.playlist_id="2WYhlTlaIZ0I4pQ2JeqU99";
 
   //set all default values to 0
   let return_value = {};
