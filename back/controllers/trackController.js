@@ -57,6 +57,82 @@ spotifyApi.clientCredentialsGrant().then(
 
 */
 
+
+
+const getUserTop = async (req,res) => {
+
+  var spotifyApi = new SpotifyWebApi({
+    clientId: process.env.CLIENTID,
+    clientSecret: process.env.CLIENTSECRET,
+    accessToken: req.body.accessToken
+  });
+
+  spotifyApi.getMyTopTracks({time_range:req.body.time_period, limit: 10, offset: 5 })
+  .then(function(data) {    
+    let trackCount = 0;
+    let albumCount = 0;
+
+    let topTracks = {
+      tracks: [],
+      albums: []
+    };
+
+    data.body.items.forEach(array => {
+
+      if (array.album.album_type === "ALBUM") {
+        albumCount++;
+        let artists = [];
+        array.artists.forEach(artist => {
+          artists.push({
+              name: artist.name,
+              artistId: artist.id
+            });
+        });
+
+        topTracks.albums.push(
+          {
+            rank: albumCount,
+            title: array.album.name,
+            albumId: array.album.id,
+            img: array.album.images,
+            artist: artists
+          }
+        );
+      }
+
+      if (array.album.album_type === "SINGLE") {
+        trackCount++;
+        let artists = [];
+        array.artists.forEach(artist => {
+          artists.push({
+              name: artist.name,
+              artistId: artist.id
+            });
+        });
+
+        topTracks.tracks.push(
+          {
+            rank: trackCount,
+            title: array.album.name,
+            titleId: array.album.id,
+            img: array.album.images,
+            artist: artists
+          }
+        );
+      }
+    });
+
+    res.status(200).json(topTracks);
+  }, function(err) {
+
+    console.log("error", err)
+    res.status(400);
+    throw new Error("Something went wrong");
+
+  });
+  
+}
+
 const getTrackInfo = (req, res) => {
   if (!req.body.track) {
     res.status(400);
@@ -223,4 +299,4 @@ const getTracksDetails = async (spotifyApi, tracks_id, return_value) => {
   return return_value;
 };
 
-module.exports = { getTrackInfo, getTrackDetails, getTracksDetails };
+module.exports = { getTrackInfo, getTrackDetails, getTracksDetails, getUserTop };
