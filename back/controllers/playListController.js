@@ -2,7 +2,6 @@ const SpotifyWebApi = require("spotify-web-api-node");
 const dotenv = require("dotenv").config({ path: "../config/.env" });
 const { getTracksDetails } = require("../controllers/trackController");
 
-
 const getPlaylistTracks = async (spotifyApi, playlist_id, size, offset_value) => {
   // Get tracks in an album
 
@@ -90,20 +89,19 @@ const getTopTrends = async (req, res) => {
 
   //getting the public access token
   spotifyApi.clientCredentialsGrant().then(
-    function (data) { 
+    function (data) {
       // set the access token
-      spotifyApi.setAccessToken(data.body["access_token"]);  
+      spotifyApi.setAccessToken(data.body["access_token"]);
 
       //get the tracks from the top 50 songs on spotify
       getPlaylistTracks(spotifyApi, req.query.playlist_id, 50, 0).then( 
         function (data) { 
           res.status(200).json(data);
-      },
-      function (err) {
-        console.log("Something went wrong when retrieving the tracks", err);
-      }
-    );
-
+        },
+        function (err) {
+          console.log("Something went wrong when retrieving the tracks", err);
+        }
+      );
     },
     function (err) {
       console.log("Something went wrong when retrieving an access token", err);
@@ -198,7 +196,6 @@ const getPlaylistDetails = async (req, res) => {
       }); 
     }
   );
-
 
 
   //get the details of the tracks

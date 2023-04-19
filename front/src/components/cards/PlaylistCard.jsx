@@ -1,8 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const PlaylistCard = ({ playlist }) => {
+  const navigate = useNavigate();
+  const redirectToPlaylist = () => {
+    navigate(`/playlist/${playlist.id}`);
+  };
   return (
-    <div className="bg-gray p-5 my-1 rounded flex items-center w-full ">
+    <div
+      className="bg-gray p-5 my-1 rounded flex items-center w-full cursor-pointer "
+      onClick={redirectToPlaylist}
+    >
       {playlist.images.length === 0 ? (
         ""
       ) : (

@@ -9,6 +9,7 @@ import Trends from "./pages/Trends";
 import Tops from "./pages/tops";
 import Analysis from "./pages/Analysis";
 import Playlists from "./pages/Playlists";
+import Playlist from "./pages/Playlist";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
@@ -30,6 +31,11 @@ function App() {
             <Route
               path="/playlists"
               element={<Playlists></Playlists>}
+              exact
+            ></Route>
+            <Route
+              path="/playlist/:id"
+              element={<Playlist></Playlist>}
               exact
             ></Route>
 
