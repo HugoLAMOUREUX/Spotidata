@@ -17,7 +17,8 @@ app.use("/api/spotify", require("./routes/trackRoute"));
 
 //add the routes related to playlists
 app.use("/api/spotify", require("./routes/playlistRoute"));
-
+//add the routes realted to artist
+app.use("/api/spotify", require("./routes/artistRoute"));
 //to see the error messages
 app.use(errorHandler);
 
