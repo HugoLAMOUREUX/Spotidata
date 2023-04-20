@@ -103,23 +103,23 @@ const getUserTop = async (req,res) => {
     data.body.items.forEach(array => {
 
       trackCount++;
-        let trackArtists = [];
-        array.artists.forEach(artist => {
-          trackArtists.push({
-              name: artist.name,
-              artistId: artist.id
-            });
-        });
+      let trackArtists = [];
+      array.artists.forEach(artist => {
+        trackArtists.push({
+            name: artist.name,
+            artistId: artist.id
+          });
+      });
 
-        topTracks.Tracks.push(
-          {
-            rank: trackCount,
-            title: array.name,
-            titleId: array.id,
-            img: array.images,
-            artist: trackArtists
-          }
-        );
+      topTracks.Tracks.push(
+        {
+          rank: trackCount,
+          title: array.name,
+          titleId: array.id,
+          img: array.images,
+          artist: trackArtists
+        }
+      );
 
       if (array.album.album_type === "ALBUM") {
         exists = false;
