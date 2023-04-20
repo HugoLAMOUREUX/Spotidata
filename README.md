@@ -2,7 +2,7 @@
 
 ## About the project
 
-Web application linked to spotify that shows some statistics about your music taste and miscellaneous informations.
+Web application linked to Spotify that shows some statistics about your music taste and miscellaneous informations.
 
 ### Built with
 
