@@ -7,8 +7,10 @@ import NavBar from "../components/NavBar";
 import { useQuery } from "@tanstack/react-query";
 import Axios from "axios";
 import PlaylistCard from "../components/cards/PlaylistCard";
+import { useTranslation } from "react-i18next";
 
 const Playlists = () => {
+  const { t } = useTranslation();
   const { accessToken } = useContext(UserContext);
   const { updateToken } = useUserData();
   const {
@@ -36,7 +38,7 @@ const Playlists = () => {
       <div className="bg-black min-h-screen m-0 p-0 flex items-center flex-col ">
         <NavBar></NavBar>
 
-        <h1 className="text-white mt-10">Loading...</h1>
+        <h1 className="text-white mt-10">{t("loading")}...</h1>
       </div>
     );
   return (
