@@ -4,7 +4,11 @@ import { useNavigate } from "react-router-dom";
 const PlaylistCard = ({ playlist }) => {
   const navigate = useNavigate();
   const redirectToPlaylist = () => {
-    navigate(`/playlist/${playlist.id}`);
+    navigate(
+      `/playlist/${playlist.id}/${encodeURIComponent(
+        playlist.name
+      )}/${encodeURIComponent(playlist.owner_name)}`
+    );
   };
   return (
     <div

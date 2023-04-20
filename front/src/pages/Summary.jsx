@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import TopTrends from "../components/TopTrends";
 import { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 import useUserData from "../hooks/useUserData";
@@ -25,7 +24,7 @@ const Summary = () => {
       >
         Make a request
       </h2>
-      <TopTrends></TopTrends>
+      <h2 className="m-5 text-xl text-white">Summary</h2>
     </div>
   );
 };
