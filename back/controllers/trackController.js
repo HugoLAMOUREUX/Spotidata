@@ -57,6 +57,112 @@ spotifyApi.clientCredentialsGrant().then(
 
 */
 
+
+
+const getUserTop = async (req,res) => {
+
+  var spotifyApi = new SpotifyWebApi({
+    clientId: process.env.CLIENTID,
+    clientSecret: process.env.CLIENTSECRET,
+    accessToken: req.body.accessToken
+  });
+
+
+  spotifyApi.getMyTopTracks({time_range:req.body.time_period, limit: 25})
+  .then(async function(data) {    
+    let trackCount = 0;
+    let albumCount = 0;
+    let artistCount = 0;
+
+    let topTracks = {
+      Tracks: [],
+      Albums: [],
+      Artists: []
+    };
+
+    console.log(data.body.items);
+    
+    await spotifyApi.getMyTopArtists()
+      .then(function(data) {
+        //topArtists = data.body.items;
+        data.body.items.forEach(artist => {
+          artistCount++;
+          topTracks.Artists.push(
+            {
+              rank: artistCount,
+              name: artist.name,
+              artistId: artist.id,
+              img: artist.images
+            }
+          )
+        });
+      }, function(err) {
+        console.log('Something went wrong!', err);
+      });
+
+    data.body.items.forEach(array => {
+
+      trackCount++;
+      let trackArtists = [];
+      array.artists.forEach(artist => {
+        trackArtists.push({
+            name: artist.name,
+            artistId: artist.id
+          });
+      });
+
+      topTracks.Tracks.push(
+        {
+          rank: trackCount,
+          title: array.name,
+          titleId: array.id,
+          img: array.images,
+          artist: trackArtists
+        }
+      );
+
+      if (array.album.album_type === "ALBUM") {
+        exists = false;
+        topTracks.Albums.forEach(album => {
+          if (array.album.name === album.title)
+            exists = true;
+        });
+
+        if (exists)
+          return;
+
+        let albumArtists = [];
+        array.album.artists.forEach(artist => {
+          albumArtists.push({
+              name: artist.name,
+              artistId: artist.id
+            });
+        });
+
+        albumCount++;
+        topTracks.Albums.push(
+          {
+            rank: albumCount,
+            title: array.album.name,
+            albumId: array.album.id,
+            img: array.album.images,
+            artist: albumArtists
+          }
+        );
+      }
+    });
+
+    res.status(200).json(topTracks);
+  }, function(err) {
+
+    console.log("error", err)
+    res.status(400);
+    throw new Error("Something went wrong");
+
+  });
+  
+}
+
 const getTrackInfo = (req, res) => {
   if (!req.body.track) {
     res.status(400);
@@ -219,4 +325,4 @@ const getTracksDetails = async (spotifyApi, tracks_id, return_value) => {
   return return_value;
 };
 
-module.exports = { getTrackInfo, getTrackDetails, getTracksDetails };
+module.exports = { getTrackInfo, getTrackDetails, getTracksDetails, getUserTop };
