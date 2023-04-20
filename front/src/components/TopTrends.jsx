@@ -1,123 +1,59 @@
 import React from "react";
-import { useState } from "react";
-import { Tab } from "@headlessui/react";
+import { useEffect } from "react";
 import TrackCard from "./cards/TrackCard";
-import ArtistCard from "./cards/ArtistCard";
+import { useQuery } from "@tanstack/react-query";
+import Axios from "axios";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 const TopTrends = () => {
-  let [categories] = useState({
-    Tracks: [
-      {
-        id: 1,
-        title: "Scared to be lonely",
-        img: "",
-        artist: "Martin Garrix",
-      },
-      {
-        id: 2,
-        title: "Glitch",
-        img: "",
-        artist: "Martin Garrix",
-      },
-      {
-        id: 3,
-        title: "Scared to be lonely",
-        img: "",
-        artist: "Martin Garrix",
-      },
-      {
-        id: 4,
-        title: "Glitch",
-        img: "",
-        artist: "Martin Garrix",
-      },
-      {
-        id: 5,
-        title: "Scared to be lonely",
-        img: "",
-        artist: "Martin Garrix",
-      },
-      {
-        id: 6,
-        title: "Glitch",
-        img: "",
-        artist: "Martin Garrix",
-      },
-    ],
-    Artists: [
-      {
-        id: 1,
-        img: "",
-        artist: "Martin Garrix",
-      },
-      {
-        id: 2,
-        img: "",
-        artist: "Martin Garrix",
-      },
-    ],
-    Albums: [
-      {
-        id: 1,
-        title: "Montagnes Russes",
-        img: "",
-        artist: "Lujipeka",
-      },
-      {
-        id: 2,
-        title: "Planet Gold",
-        img: "",
-        artist: "Sofiane Pamart",
-      },
-    ],
+  const {
+    data: trends,
+    isLoading,
+    isError,
+  } = useQuery(["trends"], () => {
+    return Axios.request({
+      method: "GET",
+      url: "http://localhost:5000/api/spotify/getTopTrends",
+    }).then((res) => {
+      return res.data;
+    });
   });
+
+  if (isLoading)
+    return (
+      <div className="w-full max-w-screen-lg px-2 py-8 ">
+        <h1 className="text-white mt-10 text-center">Loading...</h1>
+      </div>
+    );
+
   return (
     <div className="w-full max-w-screen-lg px-2 py-8">
-      <Tab.Group>
-        <Tab.List className="flex space-x-0.1 rounded-xl bg-gray">
-          {Object.keys(categories).map((category) => (
-            <Tab
-              key={category}
-              className={({ selected }) =>
-                classNames(
-                  "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-white",
-                  "ring-white ring-opacity-60 ",
-                  selected
-                    ? "bg-lightgray shadow"
-                    : "hover:bg-white/[0.12] hover:text-white"
-                )
-              }
-            >
-              {category}
-            </Tab>
-          ))}
-        </Tab.List>
-        <Tab.Panels className="mt-2">
-          {Object.values(categories).map((posts, idx) => (
-            <Tab.Panel
-              key={idx}
-              className={classNames(
-                "rounded-xl bg-gray p-3",
-                "ring-white ring-opacity-60 "
-              )}
-            >
-              <ul>
-                {posts.map((post) =>
-                  idx == 1 ? (
-                    <ArtistCard key={post.id} post={post}></ArtistCard>
-                  ) : (
-                    <TrackCard key={post.id} post={post}></TrackCard>
-                  )
-                )}
-              </ul>
-            </Tab.Panel>
-          ))}
-        </Tab.Panels>
-      </Tab.Group>
+      <div className="flex justify-center">
+        <div className="bg-gray flex flex-col items-start justify-center">
+          {trends.map((track) => {
+            return (
+              <TrackCard
+                key={track.rank}
+                track={{
+                  rank: track.rank,
+                  img: track.img.length === 0 ? "" : track.img[2].url,
+                  title: track.track_name,
+                  artist:
+                    track.artists.length === 0
+                      ? ""
+                      : track.artists.map((artist) => artist.name).join(", "),
+                  artist_id:
+                    track.artists.length === 0 ? "" : track.artists[0].id,
+                  track_id: track.track_id,
+                }}
+              ></TrackCard>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };
