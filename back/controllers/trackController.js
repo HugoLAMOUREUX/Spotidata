@@ -67,56 +67,86 @@ const getUserTop = async (req,res) => {
     accessToken: req.body.accessToken
   });
 
-  spotifyApi.getMyTopTracks({time_range:req.body.time_period, limit: 10, offset: 5 })
-  .then(function(data) {    
+
+  spotifyApi.getMyTopTracks({time_range:req.body.time_period, limit: 25})
+  .then(async function(data) {    
     let trackCount = 0;
     let albumCount = 0;
+    let artistCount = 0;
 
     let topTracks = {
-      tracks: [],
-      albums: []
+      Tracks: [],
+      Albums: [],
+      Artists: []
     };
+
+    console.log(data.body.items);
+    
+    await spotifyApi.getMyTopArtists()
+      .then(function(data) {
+        //topArtists = data.body.items;
+        data.body.items.forEach(artist => {
+          artistCount++;
+          topTracks.Artists.push(
+            {
+              rank: artistCount,
+              name: artist.name,
+              artistId: artist.id,
+              img: artist.images
+            }
+          )
+        });
+      }, function(err) {
+        console.log('Something went wrong!', err);
+      });
 
     data.body.items.forEach(array => {
 
-      if (array.album.album_type === "ALBUM") {
-        albumCount++;
-        let artists = [];
+      trackCount++;
+        let trackArtists = [];
         array.artists.forEach(artist => {
-          artists.push({
+          trackArtists.push({
               name: artist.name,
               artistId: artist.id
             });
         });
 
-        topTracks.albums.push(
+        topTracks.Tracks.push(
+          {
+            rank: trackCount,
+            title: array.name,
+            titleId: array.id,
+            img: array.images,
+            artist: trackArtists
+          }
+        );
+
+      if (array.album.album_type === "ALBUM") {
+        exists = false;
+        topTracks.Albums.forEach(album => {
+          if (array.album.name === album.title)
+            exists = true;
+        });
+
+        if (exists)
+          return;
+
+        let albumArtists = [];
+        array.album.artists.forEach(artist => {
+          albumArtists.push({
+              name: artist.name,
+              artistId: artist.id
+            });
+        });
+
+        albumCount++;
+        topTracks.Albums.push(
           {
             rank: albumCount,
             title: array.album.name,
             albumId: array.album.id,
             img: array.album.images,
-            artist: artists
-          }
-        );
-      }
-
-      if (array.album.album_type === "SINGLE") {
-        trackCount++;
-        let artists = [];
-        array.artists.forEach(artist => {
-          artists.push({
-              name: artist.name,
-              artistId: artist.id
-            });
-        });
-
-        topTracks.tracks.push(
-          {
-            rank: trackCount,
-            title: array.album.name,
-            titleId: array.album.id,
-            img: array.album.images,
-            artist: artists
+            artist: albumArtists
           }
         );
       }
