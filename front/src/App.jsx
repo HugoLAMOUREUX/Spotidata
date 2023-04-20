@@ -34,7 +34,7 @@ function App() {
               exact
             ></Route>
             <Route
-              path="/playlist/:id"
+              path="/playlist/:id/:name/:owner_name"
               element={<Playlist></Playlist>}
               exact
             ></Route>
