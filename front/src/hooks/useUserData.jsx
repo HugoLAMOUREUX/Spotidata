@@ -1,8 +1,10 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
+import { useTranslation } from "react-i18next";
 
 const useUserData = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {
     accessToken,
@@ -44,7 +46,7 @@ const useUserData = () => {
     } else {
       //if the user has refused the connexion, redirect to the home page
       if (accessToken === "") {
-        alert("There was an error during the authentication");
+        alert(t("errorAuthentication"));
         navigate("/");
       }
     }

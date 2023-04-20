@@ -1,7 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const PlaylistCard = ({ playlist }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const redirectToPlaylist = () => {
     navigate(
@@ -30,7 +32,9 @@ const PlaylistCard = ({ playlist }) => {
         <h3 className="text-white">{playlist.name}</h3>
         <h3 className="text-lightgray">{playlist.owner_name}</h3>
       </div>
-      <h3 className="text-lightgray ml-auto">{playlist.tracks.total} tracks</h3>
+      <h3 className="text-lightgray ml-auto">
+        {playlist.tracks.total} {t("tracks")}
+      </h3>
     </div>
   );
 };

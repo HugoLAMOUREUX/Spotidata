@@ -1,6 +1,9 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const Login = () => {
+  const { t } = useTranslation();
+
   function generateRandomString(length) {
     var text = "";
     var possible =
@@ -18,7 +21,8 @@ const Login = () => {
     var redirect_uri = "http://localhost:5173/callback"; // Your redirect uri
 
     var state = generateRandomString(16);
-    var scope = "user-read-private user-read-email user-top-read playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public";
+    var scope =
+      "user-read-private user-read-email user-top-read playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public";
 
     var url = "https://accounts.spotify.com/authorize";
     url += "?response_type=token";
@@ -35,7 +39,7 @@ const Login = () => {
       onClick={handleClick}
       className="bg-green text-white text-1xl font-bold py-5 px-10 mt-5 rounded cursor-pointer"
     >
-      Login with Spotify
+      {t("login")}
     </h2>
   );
 };
