@@ -6,7 +6,7 @@ import Summary from "./pages/Summary";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import UserContextProvider from "./components/UserContextProvider";
 import Trends from "./pages/Trends";
-import Tops from "./pages/tops";
+import Tops from "./pages/Tops";
 import Analysis from "./pages/Analysis";
 import Playlists from "./pages/Playlists";
 import Playlist from "./pages/Playlist";
