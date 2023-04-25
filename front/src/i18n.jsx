@@ -7,7 +7,7 @@ i18next
   .use(LanguageDetector)
   .init({
     debug: true,
-    fallbackLng: "fr",
+    fallbackLng: "en",
     resources: {
       fr: {
         translation: {
@@ -95,6 +95,35 @@ i18next
           topArtistsInPlaylist: "Top artistas en lista de reproducción",
           loading: "Cargando",
           errorAuthentication: "Se ha producido un error durante la autenticación",
+        },
+      },
+      ru: {
+        translation: {
+          login: "Login with Spotify",
+          worldTrends: "Latest world trends",
+          trends: "Trends",
+          tops: "Tops",
+          analysis: "Analysis",
+          playlists: "Playlists",
+          summary: "Summary",
+          makeRequest: "Make a request",
+          tracks: "tracks",
+          meanAccousticness: "Mean accousticness",
+          meanDanceability: "Mean danceability",
+          meanEnergy: "Mean energy",
+          meanInstrumentalness: "Mean instrumentalness",
+          meanLiveness: "Mean liveness",
+          meanLoudness: "Mean loudness",
+          meanSpeechiness: "Mean speechiness",
+          meanValence: "Mean valence",
+          meanTempo: "Mean tempo",
+          meanDuration: "Mean duration",
+          meanPopularity: "Mean popularity",
+          meanKey: "Mean key",
+          meanMode: "Mean mode",
+          topArtistsInPlaylist: "Top artists in playlist",
+          loading: "Loading",
+          errorAuthentication: "There was an error during the authentication",
         },
       },
     },
