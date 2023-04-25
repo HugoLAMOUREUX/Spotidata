@@ -6,6 +6,7 @@ const LanguageSelector = () => {
     fr: { nativeName: "Français" },
     en: { nativeName: "English" },
     es: { nativeName: "Español" },
+    ru: { nativeName: "Русский" },
   };
   const { i18n } = useTranslation();
 
