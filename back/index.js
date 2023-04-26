@@ -10,15 +10,22 @@ const app = express();
 //to pass data in the body : middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
 //middleware to allow access control allow origin
 app.use(cors());
+
 //add the routes related to tracks
 app.use("/api/spotify", require("./routes/trackRoute"));
 
 //add the routes related to playlists
 app.use("/api/spotify", require("./routes/playlistRoute"));
+
 //add the routes realted to artist
 app.use("/api/spotify", require("./routes/artistRoute"));
+
+//add the routes realted to albums
+app.use("/api/spotify", require("./routes/albumRoute"));
+
 //to see the error messages
 app.use(errorHandler);
 
