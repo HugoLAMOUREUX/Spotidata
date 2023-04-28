@@ -57,10 +57,6 @@ spotifyApi.clientCredentialsGrant().then(
 
 */
 
-
-
-
-
 const getTrackInfo = (req, res) => {
   if (!req.body.track) {
     res.status(400);
@@ -222,7 +218,5 @@ const getTracksDetails = async (spotifyApi, tracks_id, return_value) => {
 
   return return_value;
 };
-
-
 
 module.exports = { getTrackInfo, getTrackDetails, getTracksDetails };
