@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { getTrackInfo, getUserTop, getAnalysis} = require("../controllers/trackController");
+const { getTrackInfo, getTrackDetails, getTracksDetails } = require("../controllers/trackController");
 
 router.get("/getTrackInfo", getTrackInfo);
 
-router.get("/getUserTop", getUserTop);
+router.get("/getTrackDetails", getTrackDetails);
 
-router.get("/getAnalysis", getAnalysis);
+router.get("/getTracksDetails", getTracksDetails);
+
 
 module.exports = router;
