@@ -64,7 +64,7 @@ const getUserTop = async (req,res) => {
   var spotifyApi = new SpotifyWebApi({
     clientId: process.env.CLIENTID,
     clientSecret: process.env.CLIENTSECRET,
-    accessToken: req.body.accessToken
+    accessToken: req.body.access_token
   });
 
 
