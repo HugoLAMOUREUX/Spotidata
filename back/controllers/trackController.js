@@ -64,7 +64,7 @@ const getUserTop = async (req,res) => {
   var spotifyApi = new SpotifyWebApi({
     clientId: process.env.CLIENTID,
     clientSecret: process.env.CLIENTSECRET,
-    accessToken: req.body.accessToken
+    accessToken: req.body.access_token
   });
 
 
@@ -325,4 +325,53 @@ const getTracksDetails = async (spotifyApi, tracks_id, return_value) => {
   return return_value;
 };
 
-module.exports = { getTrackInfo, getTrackDetails, getTracksDetails, getUserTop };
+const getAnalysis = async (req, res) => {
+
+  var spotifyApi = new SpotifyWebApi({
+    clientId: process.env.CLIENTID,
+    clientSecret: process.env.CLIENTSECRET,
+    accessToken: req.body.access_token
+  });
+
+  spotifyApi.getMyTopArtists()
+    .then(function(data) {
+      let score = data.body.items.length, rank = 1;
+      let topGenre = [];
+      data.body.items.forEach(artist => {
+        artist.genres.forEach(genre => {
+          exists = false;
+          topGenre.forEach(g => {
+            if (g.name === genre) {
+              exists = true
+              g.score += score;
+            }
+          });
+
+          if (exists) return;
+
+          topGenre.push({
+            name: genre,
+            score: score
+          });
+        });
+        score--;
+      });
+
+      topGenre.sort(function(a,b) {
+        return b.score - a.score;
+      });
+
+      topGenre.forEach(genre => {
+        genre.rank = rank;
+        delete genre.score;
+        rank++;
+      });
+
+      res.status(200).json(topGenre);
+
+    }, function(err) {
+      console.log('Something went wrong!', err);
+    });
+};
+
+module.exports = { getTrackInfo, getTrackDetails, getTracksDetails, getUserTop, getAnalysis };
