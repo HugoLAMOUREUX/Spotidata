@@ -1,6 +1,9 @@
 const SpotifyWebApi = require("spotify-web-api-node");
 const dotenv = require("dotenv").config({ path: "../config/.env" });
+const { getTracksDetails } = require("../controllers/trackController");
+const { getMean } = require("../controllers/playListController");
 
+// Get the user's top artists
 const getUserTopArtists = async (spotifyApi) =>{
   let artists= [];
   let artistCount = 0;
@@ -13,7 +16,7 @@ const getUserTopArtists = async (spotifyApi) =>{
             {
               rank: artistCount,
               name: artist.name,
-              artistId: artist.id,
+              id: artist.id,
               img: artist.images,
               genres : artist.genres
             }
@@ -23,8 +26,9 @@ const getUserTopArtists = async (spotifyApi) =>{
         console.log('Something went wrong!', err);
       });
   return artists;
-}
+};
 
+// Get the user's top tracks and albums
 const getUserTopTracksAndAlbums = async (spotifyApi, time_rangee, nbrTracks) =>{
   let topTracks = {
     Tracks: [],
@@ -46,7 +50,7 @@ const getUserTopTracksAndAlbums = async (spotifyApi, time_rangee, nbrTracks) =>{
       track.artists.forEach(artist => {
         trackArtists.push({
             name: artist.name,
-            artistId: artist.id
+            id: artist.id
           });
       });
 
@@ -54,7 +58,7 @@ const getUserTopTracksAndAlbums = async (spotifyApi, time_rangee, nbrTracks) =>{
         {
           rank: trackCount,
           title: track.name,
-          titleId: track.id,
+          track_id: track.id,
           img: track.images,
           artist: trackArtists
         }
@@ -74,7 +78,7 @@ const getUserTopTracksAndAlbums = async (spotifyApi, time_rangee, nbrTracks) =>{
         track.album.artists.forEach(artist => {
           albumArtists.push({
               name: artist.name,
-              artistId: artist.id
+              id: artist.id
             });
         });
 
@@ -83,7 +87,7 @@ const getUserTopTracksAndAlbums = async (spotifyApi, time_rangee, nbrTracks) =>{
           {
             rank: albumCount,
             title: track.album.name,
-            albumId: track.album.id,
+            id: track.album.id,
             img: track.album.images,
             artist: albumArtists,
             artistCoef: artistCoef
@@ -107,8 +111,9 @@ const getUserTopTracksAndAlbums = async (spotifyApi, time_rangee, nbrTracks) =>{
   });
 
   return topTracks;
-}
+};
 
+// Get the most listened tracks, albums and artists of the user
 const getUserTop = async (req,res) => {
   const spotifyApi = new SpotifyWebApi({
     accessToken: req.body.access_token,
@@ -141,8 +146,8 @@ const getUserTop = async (req,res) => {
   
 };
 
+// Get the most listened genre of the user
 const getAnalysis = async (req, res) => {
-
   const spotifyApi = new SpotifyWebApi({
     accessToken: req.query.access_token,
   });
@@ -184,6 +189,7 @@ const getAnalysis = async (req, res) => {
   res.status(200).json(topGenre);
 };
 
+// Get the 50 first playlists of the user
 const getUserPlaylists = async (req, res) => {
   const spotifyApi = new SpotifyWebApi({
     accessToken: req.query.access_token,
@@ -231,18 +237,54 @@ const getUserPlaylists = async (req, res) => {
 
 //get the user's resume : 
 // - average of all the features of all the tracks of his most listened tracks
-//in construction
 const getResume = async (req, res) => {
   const spotifyApi = new SpotifyWebApi({
-    accessToken: req.body.access_token
+    accessToken: req.query.access_token,
   });
 
   let tracksAndAlubm = await getUserTopTracksAndAlbums(spotifyApi, req.body.time_period, 50);
   delete tracksAndAlubm.Albums;
 
-  
+  let tracks_ids = [];
+  tracksAndAlubm.Tracks.forEach(track => {
+    tracks_ids.push(track.track_id);
+  });
 
-  //res.status(200).json(tracksAndAlubm.Tracks);
+  //set all default values to 0
+  let return_value = {};
+  return_value.mean_danceability = 0.0;
+  return_value.mean_energy = 0.0;
+  return_value.mean_loudness = 0;
+  return_value.mean_speechiness = 0;
+  return_value.mean_acousticness = 0;
+  return_value.mean_instrumentalness = 0;
+  return_value.mean_liveness = 0;
+  return_value.mean_valence = 0;
+  return_value.mean_tempo = 0;
+  return_value.mean_time_signature = 0;
+  return_value.mean_key = 0;
+  return_value.mean_mode = 0;
+  return_value.mean_duration_ms = 0;
+  return_value.mean_popularity = 0;
+  return_value.nbr_tracks_audio_ft = 0;
+  return_value.nbr_tracks_get_norm = 0;
+  return_value.nbr_tracks = 0;
+  return_value.genres = {};
+  return_value.artists = {};
+
+  
+  return_value = await getTracksDetails(
+    spotifyApi,
+    tracks_ids,
+    return_value,
+    res
+  );
+
+  delete return_value.artists;
+
+  return_value = await getMean(return_value,50);
+
+  res.status(200).json(return_value);
 };
 
 module.exports = { getUserTop, getAnalysis, getUserPlaylists, getResume };
