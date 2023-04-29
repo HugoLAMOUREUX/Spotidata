@@ -6,6 +6,7 @@ const UserContextProvider = ({ children }) => {
   const [refreshToken, setRefreshToken] = useState("");
   const [expiresIn, setExpiresIn] = useState("");
   const [state, setState] = useState("");
+  const [time_range, setTime_range] = useState("medium_term");
 
   return (
     <UserContext.Provider
@@ -18,6 +19,8 @@ const UserContextProvider = ({ children }) => {
         setExpiresIn,
         state,
         setState,
+        time_range,
+        setTime_range,
       }}
     >
       {children}

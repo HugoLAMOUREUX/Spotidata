@@ -71,7 +71,6 @@ const getPlaylistTracks = async (
             count++;
           });
         }
-        console.log(data.body);
         return data.body;
       },
       function (err) {
@@ -118,7 +117,7 @@ const getTopTrends = async (req, res) => {
 const getPlaylistDetails = async (req, res) => {
   if (!req.query.access_token || !req.query.playlist_id) {
     res.status(400);
-  } 
+  }
   const spotifyApi = new SpotifyWebApi({
     accessToken: req.query.access_token,
   });
@@ -188,13 +187,13 @@ const getPlaylistDetails = async (req, res) => {
   }
 
   //calculate the mean of each feature
-  return_value = getMean(return_value,total);
+  return_value = getMean(return_value, total);
 
   res.status(200).json(return_value);
 };
 
 //is used to get the means for each feature (used by getPlaylistDetails, and getResume)
-const getMean = (return_value,total) => {
+const getMean = (return_value, total) => {
   return_value.mean_danceability = (
     return_value.mean_danceability / return_value.nbr_tracks_audio_ft
   ).toFixed(2);
@@ -249,7 +248,7 @@ const getMean = (return_value,total) => {
   return_value.nbr_tracks = total;
 
   //if there's no artists end the function
-  if(!return_value.artists){
+  if (!return_value.artists) {
     return return_value;
   }
 

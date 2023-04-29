@@ -47,7 +47,7 @@ const Playlists = () => {
 
       <div className=" w-1/2">
         {playlists.items.map((playlist) => (
-          <PlaylistCard playlist={playlist}></PlaylistCard>
+          <PlaylistCard key={playlist.id} playlist={playlist}></PlaylistCard>
         ))}
       </div>
     </div>
