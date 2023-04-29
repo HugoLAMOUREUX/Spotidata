@@ -2,6 +2,7 @@ const SpotifyWebApi = require("spotify-web-api-node");
 const dotenv = require("dotenv").config({ path: "../config/.env" });
 const { getTracksDetails } = require("../controllers/trackController");
 
+//get the tracks from a given playlist
 const getPlaylistTracks = async (
   spotifyApi,
   playlist_id,
@@ -70,6 +71,7 @@ const getPlaylistTracks = async (
             count++;
           });
         }
+        console.log(data.body);
         return data.body;
       },
       function (err) {
@@ -79,8 +81,8 @@ const getPlaylistTracks = async (
     );
 };
 
+//get the tracks from the top 50 songs on spotify
 const getTopTrends = async (req, res) => {
-  //get the tracks from the top 50 songs on spotify
   const topSongSpotifyPlaylistId = "37i9dQZEVXbMDoHDwVN2tF";
   req.query.playlist_id = topSongSpotifyPlaylistId;
 
@@ -112,12 +114,11 @@ const getTopTrends = async (req, res) => {
   );
 };
 
-
-
+//get the details of a playlist (with the mean of each audio features of the tracks in the playlist)
 const getPlaylistDetails = async (req, res) => {
   if (!req.query.access_token || !req.query.playlist_id) {
     res.status(400);
-  }
+  } 
   const spotifyApi = new SpotifyWebApi({
     accessToken: req.query.access_token,
   });
@@ -187,6 +188,13 @@ const getPlaylistDetails = async (req, res) => {
   }
 
   //calculate the mean of each feature
+  return_value = getMean(return_value,total);
+
+  res.status(200).json(return_value);
+};
+
+//is used to get the means for each feature (used by getPlaylistDetails, and getResume)
+const getMean = (return_value,total) => {
   return_value.mean_danceability = (
     return_value.mean_danceability / return_value.nbr_tracks_audio_ft
   ).toFixed(2);
@@ -236,8 +244,14 @@ const getPlaylistDetails = async (req, res) => {
   //delete for more clarity
   delete return_value.nbr_tracks_audio_ft;
   delete return_value.nbr_tracks_get_norm;
+  delete return_value.mean_duration_ms;
 
   return_value.nbr_tracks = total;
+
+  //if there's no artists end the function
+  if(!return_value.artists){
+    return return_value;
+  }
 
   //sort artists by number of tracks they appear in
   let sorted_artists = Object.keys(return_value.artists).sort(function (a, b) {
@@ -253,7 +267,7 @@ const getPlaylistDetails = async (req, res) => {
   }
   delete return_value.artists;
 
-  res.status(200).json(return_value);
+  return return_value;
 };
 
-module.exports = { getTopTrends, getPlaylistDetails };
+module.exports = { getTopTrends, getPlaylistDetails, getMean };
