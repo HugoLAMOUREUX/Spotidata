@@ -256,14 +256,4 @@ const getPlaylistDetails = async (req, res) => {
   res.status(200).json(return_value);
 };
 
-//get the user's resume : 
-// - average of all the features of all the tracks of his most listened tracks
-const getUserResume = async (req, res) => {
-
-
-
-};
-
-
-
 module.exports = { getTopTrends, getPlaylistDetails };
