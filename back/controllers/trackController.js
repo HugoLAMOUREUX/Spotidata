@@ -57,37 +57,15 @@ spotifyApi.clientCredentialsGrant().then(
 
 */
 
-
-
-const getUserTop = async (req,res) => {
-
-  var spotifyApi = new SpotifyWebApi({
-    clientId: process.env.CLIENTID,
-    clientSecret: process.env.CLIENTSECRET,
-    accessToken: req.body.access_token
-  });
-
-
-  spotifyApi.getMyTopTracks({time_range:req.body.time_period, limit: 25})
-  .then(async function(data) {    
-    let trackCount = 0;
-    let albumCount = 0;
-    let artistCount = 0;
-
-    let topTracks = {
-      Tracks: [],
-      Albums: [],
-      Artists: []
-    };
-
-    console.log(data.body.items);
-    
-    await spotifyApi.getMyTopArtists()
+const getUserTopArtists = async (spotifyApi) =>{
+  let artists= [];
+  let artistCount = 0;
+  await spotifyApi.getMyTopArtists()
       .then(function(data) {
         //topArtists = data.body.items;
         data.body.items.forEach(artist => {
           artistCount++;
-          topTracks.Artists.push(
+          artists.push(
             {
               rank: artistCount,
               name: artist.name,
@@ -99,12 +77,28 @@ const getUserTop = async (req,res) => {
       }, function(err) {
         console.log('Something went wrong!', err);
       });
+  return artists;
+}
 
-    data.body.items.forEach(array => {
+const getUserTopTracksAndAlbums = async (spotifyApi, time_rangee, nbrTracks) =>{
+  let topTracks = {
+    Tracks: [],
+    Albums: []
+  };
+
+  await spotifyApi.getMyTopTracks({time_range:time_rangee, limit: nbrTracks})
+  .then(async function(data) {    
+    let trackCount = 0;
+    let albumCount = 0;
+    let artistCoef = nbrTracks;
+
+    //for each track in the top tracks
+    data.body.items.forEach(track => {
 
       trackCount++;
       let trackArtists = [];
-      array.artists.forEach(artist => {
+      //for each artist in the track
+      track.artists.forEach(artist => {
         trackArtists.push({
             name: artist.name,
             artistId: artist.id
@@ -114,17 +108,19 @@ const getUserTop = async (req,res) => {
       topTracks.Tracks.push(
         {
           rank: trackCount,
-          title: array.name,
-          titleId: array.id,
-          img: array.images,
+          title: track.name,
+          titleId: track.id,
+          img: track.images,
           artist: trackArtists
         }
       );
 
-      if (array.album.album_type === "ALBUM") {
+      //if the track is in an album
+      if (track.album.album_type === "ALBUM") {
         exists = false;
+        //if the album already exists in the list (if there is an higher track from the same album)
         topTracks.Albums.forEach(album => {
-          if (array.album.name === album.title)
+          if (track.album.name === album.title)
             exists = true;
         });
 
@@ -132,7 +128,7 @@ const getUserTop = async (req,res) => {
           return;
 
         let albumArtists = [];
-        array.album.artists.forEach(artist => {
+        track.album.artists.forEach(artist => {
           albumArtists.push({
               name: artist.name,
               artistId: artist.id
@@ -143,25 +139,50 @@ const getUserTop = async (req,res) => {
         topTracks.Albums.push(
           {
             rank: albumCount,
-            title: array.album.name,
-            albumId: array.album.id,
-            img: array.album.images,
+            title: track.album.name,
+            albumId: track.album.id,
+            img: track.album.images,
             artist: albumArtists
           }
         );
       }
     });
-
-    res.status(200).json(topTracks);
   }, function(err) {
 
     console.log("error", err)
-    res.status(400);
     throw new Error("Something went wrong");
 
   });
-  
+
+  return topTracks;
 }
+
+const getUserTop = async (req,res) => {
+  //accessToken: req.body.access_token
+  var spotifyApi = new SpotifyWebApi({
+    accessToken: "BQCQq7hp6thqt7UqUuSWq7lV9NmJZ9wfx_OO2a8r2a8-GDFOdmi8uFPOphVL6mteGbdf6ehmc6pYo3ejp4_K54fmzIHEqi70RgMIP2E-9edCU_GqaNXQ3lDgxM7tgwfgc-fDEpR47P475cqR7it4ZpQ6jojneoTKq2ktJgYUpq7pwi-EvI-0B-om4fhUA_gwUHf_yZvBRwAfgK-Jy1yuE7H35IGZ99eGgosOyncvWIVtDVHlGixg9MfwI7tfimd0v9JktJCjI7PxpAt-GnBYFYgNrInBqg",
+  });
+
+
+  let topTracks = {
+    Tracks: [],
+    Albums: [],
+    Artists: []
+  };
+
+  let thing = await getUserTopTracksAndAlbums(spotifyApi, req.body.time_period, 25);
+  if(!thing || !thing.Tracks || !thing.Albums){
+    res.status(400);
+    throw new Error("Something went wrong");
+  }
+  topTracks.Tracks = thing.Tracks;
+  topTracks.Albums = thing.Albums;
+
+  topTracks.Artists = await getUserTopArtists(spotifyApi);
+
+  res.status(200).json(topTracks);
+  
+};
 
 const getTrackInfo = (req, res) => {
   if (!req.body.track) {
