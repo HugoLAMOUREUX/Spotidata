@@ -112,50 +112,7 @@ const getTopTrends = async (req, res) => {
   );
 };
 
-const getUserPlaylists = async (req, res) => {
-  const spotifyApi = new SpotifyWebApi({
-    accessToken: req.query.access_token,
-  });
 
-  // Get the 50 first playlists of the user
-  spotifyApi.getUserPlaylists({ limit: 50, offset: 0 }).then(
-    function (data) {
-      if (data.body.href) {
-        delete data.body.href;
-      }
-      if (data.body.items) {
-        let count = 1;
-        data.body.items.forEach((item) => {
-          item.rank = count;
-          if (item.href) {
-            delete item.href;
-          }
-          if (item.snapshot_id) {
-            delete item.snapshot_id;
-          }
-          if (item.uri) {
-            delete item.uri;
-          }
-          if (item.owner && item.owner.display_name) {
-            item.owner_name = item.owner.display_name;
-          }
-          if (item.owner && item.owner.id) {
-            item.owner_id = item.owner.id;
-          }
-
-          delete item.owner;
-
-          count++;
-        });
-      }
-      res.status(200).json(data.body);
-    },
-    function (err) {
-      res.status(400);
-      console.log(err);
-    }
-  );
-};
 
 const getPlaylistDetails = async (req, res) => {
   if (!req.query.access_token || !req.query.playlist_id) {
@@ -299,4 +256,4 @@ const getPlaylistDetails = async (req, res) => {
   res.status(200).json(return_value);
 };
 
-module.exports = { getTopTrends, getUserPlaylists, getPlaylistDetails };
+module.exports = { getTopTrends, getPlaylistDetails };
