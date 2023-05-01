@@ -112,7 +112,10 @@ const getTopTrends = async (req, res) => {
   );
 };
 
-const getUserPlaylists = async (req, res) => {
+
+// getUserPlaylists (only gets 50 playlists)
+
+/* const getUserPlaylists = async (req, res) => {
   const spotifyApi = new SpotifyWebApi({
     accessToken: req.query.access_token,
   });
@@ -120,9 +123,11 @@ const getUserPlaylists = async (req, res) => {
   // Get the 50 first playlists of the user
   spotifyApi.getUserPlaylists({ limit: 50, offset: 0 }).then(
     function (data) {
+
       if (data.body.href) {
         delete data.body.href;
       }
+
       if (data.body.items) {
         let count = 1;
         data.body.items.forEach((item) => {
@@ -155,7 +160,58 @@ const getUserPlaylists = async (req, res) => {
       console.log(err);
     }
   );
+}; */
+
+//Trying to do a loop to get all the playlists from an user
+const getUserPlaylists = async (req, res) => {
+  const spotifyApi = new SpotifyWebApi({
+    accessToken: req.query.access_token,
+  });
+
+  let allPlaylists = [];
+  let options = { limit: 50, offset: 0 };
+  let data = await spotifyApi.getUserPlaylists(options);
+
+  // Use a while loop to keep getting playlists until there are no more left
+  while (data.body.items.length != 0) {
+    allPlaylists = allPlaylists.concat(data.body.items);
+    options.offset += 50;
+    data = await spotifyApi.getUserPlaylists(options);
+  }
+
+  if (allPlaylists.body.href) {
+    delete allPlaylists.body.href;
+  }
+  
+  if (allPlaylists.body.items) {
+    let count = 1;
+    allPlaylists.forEach((item) => {
+      item.rank = count;
+      if (item.href) {
+        delete item.href;
+      }
+      if (item.snapshot_id) {
+        delete item.snapshot_id;
+      }
+      if (item.uri) {
+        delete item.uri;
+      }
+      if (item.owner && item.owner.display_name) {
+        item.owner_name = item.owner.display_name;
+      }
+      if (item.owner && item.owner.id) {
+        item.owner_id = item.owner.id;
+      }
+
+      delete item.owner;
+
+      count++;
+    });
+  }
+  
+  res.status(200).json(allPlaylists);
 };
+
 
 const getPlaylistDetails = async (req, res) => {
   if (!req.query.access_token || !req.query.playlist_id) {

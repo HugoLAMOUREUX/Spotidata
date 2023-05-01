@@ -35,7 +35,7 @@ const getAlbumDetails = async (req, res) => {
     return_value.genres = {};
     return_value.artists = {};
   
-    //is used to store the total number of tracks in the playlist
+    //is used to store the total number of tracks in the album
     let total;
     //is used to store temporarly the ids of the tracks that will be used to get the details of the tracks
     let tracks_ids = [];
