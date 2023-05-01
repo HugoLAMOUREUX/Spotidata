@@ -1,6 +1,176 @@
 const SpotifyWebApi = require("spotify-web-api-node");
 const dotenv = require("dotenv").config({ path: "../config/.env" });
 
+/*
+
+        API SPOTIFY TEST with Client credentials
+https://developer.spotify.com/documentation/general/guides/authorization/
+*/
+/*
+// Create the api object with the credentials
+var spotifyApi = new SpotifyWebApi({
+  clientId: process.env.CLIENTID,
+  clientSecret: process.env.CLIENTSECRET,
+});
+
+
+ //Retrieve an access token.
+spotifyApi.clientCredentialsGrant().then(
+  function (data) {
+    console.log("The access token expires in " + data.body["expires_in"]);
+    console.log("The access token is " + data.body["access_token"]);
+
+    // Save the access token so that it's used in future calls
+    spotifyApi.setAccessToken(data.body["access_token"]);
+    // Get multiple albums
+    spotifyApi
+      .getAlbums(["5U4W9E5WsYb2jUQWePT8Xm", "3KyVcddATClQKIdtaap4bV"])
+      .then(
+        function (data) {
+          console.log("Albums information", data.body);
+        },
+        function (err) {
+          console.error(err);
+        }
+      );
+    spotifyApi.searchArtists("Dua Lip").then(function (data) {
+      console.log("Searched Artists", data.body.artists.items);
+    });
+  },
+  function (err) {
+    console.log("Something went wrong when retrieving an access token", err);
+  }
+);
+
+        API TEST SPOTIFY END
+*/
+
+/*      
+
+        API SPOTIFY TEST with Implicit Grant flow
+
+*/
+
+/*      
+
+        API SPOTIFY TEST  END with Implicit Grant flow
+
+*/
+
+
+
+const getUserTop = async (req,res) => {
+
+  var spotifyApi = new SpotifyWebApi({
+    clientId: process.env.CLIENTID,
+    clientSecret: process.env.CLIENTSECRET,
+    accessToken: req.body.accessToken
+  });
+
+
+  spotifyApi.getMyTopTracks({time_range:req.body.time_period, limit: 25})
+  .then(async function(data) {    
+    let trackCount = 0;
+    let albumCount = 0;
+    let artistCount = 0;
+
+    let topTracks = {
+      Tracks: [],
+      Albums: [],
+      Artists: []
+    };
+
+    console.log(data.body.items);
+    
+    await spotifyApi.getMyTopArtists()
+      .then(function(data) {
+        //topArtists = data.body.items;
+        data.body.items.forEach(artist => {
+          artistCount++;
+          topTracks.Artists.push(
+            {
+              rank: artistCount,
+              name: artist.name,
+              artistId: artist.id,
+              img: artist.images
+            }
+          )
+        });
+      }, function(err) {
+        console.log('Something went wrong!', err);
+      });
+
+    data.body.items.forEach(array => {
+
+      trackCount++;
+      let trackArtists = [];
+      array.artists.forEach(artist => {
+        trackArtists.push({
+            name: artist.name,
+            artistId: artist.id
+          });
+      });
+
+      topTracks.Tracks.push(
+        {
+          rank: trackCount,
+          title: array.name,
+          titleId: array.id,
+          img: array.images,
+          artist: trackArtists
+        }
+      );
+
+      if (array.album.album_type === "ALBUM") {
+        exists = false;
+        topTracks.Albums.forEach(album => {
+          if (array.album.name === album.title)
+            exists = true;
+        });
+
+        if (exists)
+          return;
+
+        let albumArtists = [];
+        array.album.artists.forEach(artist => {
+          albumArtists.push({
+              name: artist.name,
+              artistId: artist.id
+            });
+        });
+
+        albumCount++;
+        topTracks.Albums.push(
+          {
+            rank: albumCount,
+            title: array.album.name,
+            albumId: array.album.id,
+            img: array.album.images,
+            artist: albumArtists
+          }
+        );
+      }
+    });
+
+    res.status(200).json(topTracks);
+  }, function(err) {
+
+    console.log("error", err)
+    res.status(400);
+    throw new Error("Something went wrong");
+
+  });
+  
+}
+
+const getTrackInfo = (req, res) => {
+  if (!req.body.track) {
+    res.status(400);
+    throw new Error("Please add the spotify tracks you want");
+  }
+  res.status(200).json({ test: "ok" });
+};
+
 const getTrackDetails = async (spotifyApi, track_id) => {
   let return_value;
   await spotifyApi.getAudioFeaturesForTrack(track_id).then(
@@ -155,4 +325,4 @@ const getTracksDetails = async (spotifyApi, tracks_id, return_value) => {
   return return_value;
 };
 
-module.exports = { getTrackDetails, getTracksDetails };
+module.exports = { getTrackInfo, getTrackDetails, getTracksDetails, getUserTop };

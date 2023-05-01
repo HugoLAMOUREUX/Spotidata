@@ -16,8 +16,7 @@ app.use(cors());
 
 //add the routes related to tracks
 app.use("/api/spotify", require("./routes/trackRoute"));
-//add the routes related to the user
-app.use("/api/spotify", require("./routes/userRoute"));
+
 //add the routes related to playlists
 app.use("/api/spotify", require("./routes/playlistRoute"));
 
