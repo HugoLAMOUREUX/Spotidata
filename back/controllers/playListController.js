@@ -112,57 +112,6 @@ const getTopTrends = async (req, res) => {
   );
 };
 
-
-// getUserPlaylists (only gets 50 playlists)
-
-/* const getUserPlaylists = async (req, res) => {
-  const spotifyApi = new SpotifyWebApi({
-    accessToken: req.query.access_token,
-  });
-
-  // Get the 50 first playlists of the user
-  spotifyApi.getUserPlaylists({ limit: 50, offset: 0 }).then(
-    function (data) {
-
-      if (data.body.href) {
-        delete data.body.href;
-      }
-
-      if (data.body.items) {
-        let count = 1;
-        data.body.items.forEach((item) => {
-          item.rank = count;
-          if (item.href) {
-            delete item.href;
-          }
-          if (item.snapshot_id) {
-            delete item.snapshot_id;
-          }
-          if (item.uri) {
-            delete item.uri;
-          }
-          if (item.owner && item.owner.display_name) {
-            item.owner_name = item.owner.display_name;
-          }
-          if (item.owner && item.owner.id) {
-            item.owner_id = item.owner.id;
-          }
-
-          delete item.owner;
-
-          count++;
-        });
-      }
-      res.status(200).json(data.body);
-    },
-    function (err) {
-      res.status(400);
-      console.log(err);
-    }
-  );
-}; */
-
-//Trying to do a loop to get all the playlists from an user
 const getUserPlaylists = async (req, res) => {
   const spotifyApi = new SpotifyWebApi({
     accessToken: req.query.access_token,
@@ -178,12 +127,8 @@ const getUserPlaylists = async (req, res) => {
     options.offset += 50;
     data = await spotifyApi.getUserPlaylists(options);
   }
-
-  if (allPlaylists.body.href) {
-    delete allPlaylists.body.href;
-  }
   
-  if (allPlaylists.body.items) {
+  if (allPlaylists.length != 0) {
     let count = 1;
     allPlaylists.forEach((item) => {
       item.rank = count;
@@ -209,7 +154,7 @@ const getUserPlaylists = async (req, res) => {
     });
   }
   
-  res.status(200).json(allPlaylists);
+  res.status(200).json({ items: allPlaylists });
 };
 
 
