@@ -189,50 +189,50 @@ const getAnalysis = async (req, res) => {
   res.status(200).json(topGenre);
 };
 
-// Get the 50 first playlists of the user
+// Get all the playlists of the user
 const getUserPlaylists = async (req, res) => {
   const spotifyApi = new SpotifyWebApi({
     accessToken: req.query.access_token,
   });
 
-  // Get the 50 first playlists of the user
-  spotifyApi.getUserPlaylists({ limit: 50, offset: 0 }).then(
-    function (data) {
-      if (data.body.href) {
-        delete data.body.href;
-      }
-      if (data.body.items) {
-        let count = 1;
-        data.body.items.forEach((item) => {
-          item.rank = count;
-          if (item.href) {
-            delete item.href;
-          }
-          if (item.snapshot_id) {
-            delete item.snapshot_id;
-          }
-          if (item.uri) {
-            delete item.uri;
-          }
-          if (item.owner && item.owner.display_name) {
-            item.owner_name = item.owner.display_name;
-          }
-          if (item.owner && item.owner.id) {
-            item.owner_id = item.owner.id;
-          }
+  let allPlaylists = [];
+  let options = { limit: 50, offset: 0 };
+  let data = await spotifyApi.getUserPlaylists(options);
 
-          delete item.owner;
+  // Use a while loop to keep getting playlists until there are no more left
+  while (data.body.items.length != 0) {
+    allPlaylists = allPlaylists.concat(data.body.items);
+    options.offset += 50;
+    data = await spotifyApi.getUserPlaylists(options);
+  }
 
-          count++;
-        });
+  if (allPlaylists.length != 0) {
+    let count = 1;
+    allPlaylists.forEach((item) => {
+      item.rank = count;
+      if (item.href) {
+        delete item.href;
       }
-      res.status(200).json(data.body);
-    },
-    function (err) {
-      res.status(400);
-      console.log(err);
-    }
-  );
+      if (item.snapshot_id) {
+        delete item.snapshot_id;
+      }
+      if (item.uri) {
+        delete item.uri;
+      }
+      if (item.owner && item.owner.display_name) {
+        item.owner_name = item.owner.display_name;
+      }
+      if (item.owner && item.owner.id) {
+        item.owner_id = item.owner.id;
+      }
+
+      delete item.owner;
+
+      count++;
+    });
+  }
+
+  res.status(200).json({ items: allPlaylists });
 };
 
 //get the user's resume : 
