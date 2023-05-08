@@ -7,11 +7,13 @@ import Axios from "axios";
 import { useContext } from "react";
 import FeatureCard from "../components/cards/FeatureCard";
 import { useTranslation } from "react-i18next";
+import useUserData from "../hooks/useUserData";
 
 const Playlist = () => {
   const { t } = useTranslation();
   const params = useParams();
   const { accessToken } = useContext(UserContext);
+  const { checkAuthentication } = useUserData();
   const id = params.id;
   const name = decodeURIComponent(params.name);
   const owner_name = decodeURIComponent(params.owner_name);
@@ -31,6 +33,10 @@ const Playlist = () => {
       return res.data;
     });
   });
+
+  useEffect(() => {
+    checkAuthentication();
+  }, []);
 
   if (isLoading)
     return (

@@ -10,7 +10,7 @@ const NavBar = () => {
       <div className="flex justify-center align-center">
         {[
           [t("trends"), "/trends"],
-          [t("summary"), "/callback"],
+          [t("summary"), "/resume"],
           [t("tops"), "/tops"],
           [t("analysis"), "/analysis"],
           [t("playlists"), "/playlists"],

@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import TopTrends from "../components/TopTrends";
 import { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 import useUserData from "../hooks/useUserData";
@@ -12,7 +11,7 @@ import { useTranslation } from "react-i18next";
 const Playlists = () => {
   const { t } = useTranslation();
   const { accessToken } = useContext(UserContext);
-  const { updateToken } = useUserData();
+  const { checkAuthentication } = useUserData();
   const {
     data: playlists,
     isLoading,
@@ -30,7 +29,7 @@ const Playlists = () => {
   });
 
   useEffect(() => {
-    updateToken();
+    checkAuthentication();
   }, []);
 
   if (isLoading)

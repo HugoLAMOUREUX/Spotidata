@@ -72,6 +72,12 @@ i18next
           short_term: "Last 4 weeks",
           medium_term: "Last 6 months",
           long_term: "All time",
+          average_hapiness: "Average happiness of your top songs : ",
+          obscurity_score:
+            "Your obscurity Score (average popularity of your top songs) : ",
+          average_danceability:
+            "Your dancer score (average danceability of your top songs) : ",
+          top_track: "Top track",
         },
       },
       es: {

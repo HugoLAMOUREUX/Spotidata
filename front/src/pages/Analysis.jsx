@@ -1,14 +1,16 @@
 import React from "react";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../contexts/UserContext";
 import NavBar from "../components/NavBar";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import Axios from "axios";
 import TimeSelector from "../components/TimeSelector";
+import useUserData from "../hooks/useUserData";
 
 const Analysis = () => {
   const { t } = useTranslation();
+  const { checkAuthentication } = useUserData();
   const { accessToken, time_range } = useContext(UserContext);
   const {
     data: analysis,
@@ -27,10 +29,18 @@ const Analysis = () => {
     });
   });
 
+  useEffect(() => {
+    checkAuthentication();
+  }, []);
+
   if (isLoading)
     return (
-      <div className="w-full max-w-screen-lg px-2 py-8 ">
-        <h1 className="text-white mt-10 text-center">Loading...</h1>
+      <div className="bg-black min-h-screen m-0 p-0 flex items-center flex-col ">
+        <NavBar></NavBar>
+        <TimeSelector></TimeSelector>
+        <div className="w-full max-w-screen-lg px-2 py-8 ">
+          <h1 className="text-white mt-10 text-center">Loading...</h1>
+        </div>
       </div>
     );
 
