@@ -22,7 +22,7 @@ const Analysis = () => {
       url: "http://localhost:5000/api/spotify/getAnalysis",
       params: {
         access_token: accessToken,
-        time_period: time_range,
+        time_range: time_range,
       },
     }).then((res) => {
       return res.data;

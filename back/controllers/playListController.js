@@ -201,38 +201,43 @@ const getMean = (return_value, total) => {
       ).toFixed(2) * 100
     ) + " %";
   return_value.mean_energy =
-    (return_value.mean_energy / return_value.nbr_tracks_audio_ft).toFixed(2) *
-      100 +
-    " %";
+    Math.round(
+      (return_value.mean_energy / return_value.nbr_tracks_audio_ft).toFixed(2) *
+        100
+    ) + " %";
   return_value.mean_loudness =
     (return_value.mean_loudness / return_value.nbr_tracks_audio_ft).toFixed(2) +
     " dB";
   return_value.mean_speechiness =
-    (return_value.mean_speechiness / return_value.nbr_tracks_audio_ft).toFixed(
-      1
-    ) *
-      100 +
-    " %";
+    Math.round(
+      (
+        return_value.mean_speechiness / return_value.nbr_tracks_audio_ft
+      ).toFixed(2) * 100
+    ) + " %";
   return_value.mean_acousticness =
-    (return_value.mean_acousticness / return_value.nbr_tracks_audio_ft).toFixed(
-      2
-    ) *
-      100 +
-    " %";
+    Math.round(
+      (
+        return_value.mean_acousticness / return_value.nbr_tracks_audio_ft
+      ).toFixed(2) * 100
+    ) + " %";
   return_value.mean_instrumentalness =
-    (
-      return_value.mean_instrumentalness / return_value.nbr_tracks_audio_ft
-    ).toFixed(2) *
-      100 +
-    " %";
+    Math.round(
+      (
+        return_value.mean_instrumentalness / return_value.nbr_tracks_audio_ft
+      ).toFixed(2) * 100
+    ) + " %";
   return_value.mean_liveness =
-    (return_value.mean_liveness / return_value.nbr_tracks_audio_ft).toFixed(2) *
-      100 +
-    " %";
+    Math.round(
+      (return_value.mean_liveness / return_value.nbr_tracks_audio_ft).toFixed(
+        2
+      ) * 100
+    ) + " %";
   return_value.mean_valence =
-    (return_value.mean_valence / return_value.nbr_tracks_audio_ft).toFixed(2) *
-      100 +
-    " %";
+    Math.round(
+      (return_value.mean_valence / return_value.nbr_tracks_audio_ft).toFixed(
+        2
+      ) * 100
+    ) + " %";
   return_value.mean_tempo =
     (return_value.mean_tempo / return_value.nbr_tracks_audio_ft).toFixed(2) +
     " BPM";

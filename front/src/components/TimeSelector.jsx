@@ -15,14 +15,14 @@ const TimeSelector = () => {
       <RadioGroup
         value={time_range}
         onChange={setTime_range}
-        className="flex justify-center w-full"
+        className="flex justify-center w-full items-stretch"
       >
         {times.map((plan) => (
           /* Use the `checked` state to conditionally style the checked option. */
           <RadioGroup.Option key={plan} value={plan}>
             {({ checked }) => (
               <div
-                className={`mx-2 rounded py-2 px-10 cursor-pointer font-medium  ${
+                className={`mx-2 rounded py-2 px-10 cursor-pointer font-medium ${
                   checked
                     ? "bg-lightgray shadow text-white"
                     : "bg-gray text-white hover:bg-white/[0.4] "

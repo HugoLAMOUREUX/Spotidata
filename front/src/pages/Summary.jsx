@@ -65,9 +65,7 @@ const Summary = () => {
 
   useEffect(() => {
     console.log(resume);
-    console.log(categories);
-    console.log(analysis);
-  }, [resume, categories, analysis]);
+  }, [resume]);
 
   if (isLoadingCategories || isLoadingResume || isLoadingAnalysis)
     return (
@@ -84,28 +82,103 @@ const Summary = () => {
     <div className="bg-black min-h-screen m-0 p-0 flex items-center flex-col ">
       <NavBar></NavBar>
       <TimeSelector></TimeSelector>
-      <h3 className="m-5 text-xl text-white">
+      <h3 className="m-5 text-xl text-white text-center">
         {t("average_hapiness")}{" "}
-        <span className="text-green font-bold">{resume.mean_valence}</span>
+        <span className="text-green font-bold ">{resume.mean_valence}</span>
       </h3>
-      <h3 className="m-5 text-xl text-white">
+      <h3 className="m-5 text-xl text-white text-center">
         {t("obscurity_score")}
         <span className="text-green font-bold">{resume.mean_popularity}</span>
       </h3>
-      <h3 className="m-5 text-xl text-white">
+      <h3 className="m-5 text-xl text-white text-center">
         {t("average_danceability")}
         <span className="text-green font-bold">{resume.mean_danceability}</span>
       </h3>
-      <div className="flex items-center justify-center flex-row flex-wrap">
-        <div className="bg-gray p-5 rounded flex flex-col items-center">
-          <h3 className="text-white">{t("top_track")}</h3>
-          {/* <img src={""} alt="top track image" /> */}
-          <div className=" px-4">
-            <h3 className="text-white">{categories.Tracks[0].title}</h3>
-            {/* <h3 className="text-lightgray">{categories.Tracks[0].artist[0]}</h3> */}
-          </div>
+      <h3 className="m-5 text-xl text-white text-center">
+        {t("top_genre")}
+        <span className="text-green font-bold">{analysis[0].name}</span>
+      </h3>
+
+      <div className="flex justify-center flex-row flex-wrap items-stretch">
+        {/* Top Track */}
+        <div className="bg-gray py-2 px-5 rounded flex flex-col items-center justify-center m-5 flex-1">
+          <h3 className="text-white text-center">{t("top_track")}</h3>
+          <img
+            src={categories.Tracks[0]["img"][0].url}
+            width="80"
+            height="80"
+            alt=""
+            className="my-2"
+          />
+          <h3 className="text-white text-center">
+            {categories.Tracks[0].title}
+          </h3>
+          <h3 className="text-lightgray text-center">
+            {categories.Tracks[0].artist
+              .map((artist) => artist.name)
+              .join(", ")}
+          </h3>
+        </div>
+        {/* Top Artist */}
+        <div className="bg-gray py-2 px-5 rounded flex flex-col justify-center items-center m-5 flex-1">
+          <h3 className="text-white text-center">{t("top_artist")}</h3>
+          <img
+            src={categories.Artists[0]["img"][0].url}
+            width="80"
+            height="80"
+            alt=""
+            className="my-2"
+          />
+          <h3 className="text-white text-center">
+            {categories.Artists[0].name}
+          </h3>
+        </div>
+        {/* Top Album */}
+        <div className="bg-gray py-2 px-5 rounded flex flex-col items-center justify-center m-5 flex-1">
+          <h3 className="text-white text-center">{t("top_track")}</h3>
+          <img
+            src={categories.Albums[0]["img"][0].url}
+            width="80"
+            height="80"
+            alt=""
+            className="my-2"
+          />
+          <h3 className="text-white text-center">
+            {categories.Albums[0].title}
+          </h3>
+          <h3 className="text-lightgray text-center">
+            {categories.Albums[0].artist
+              .map((artist) => artist.name)
+              .join(", ")}
+          </h3>
         </div>
       </div>
+      <h3 className="m-5 text-xl text-white text-center">
+        {t("average_duration")}
+        <span className="text-green font-bold">{resume.mean_duration_s}</span>
+      </h3>
+      <h3 className="m-5 text-xl text-white text-center">
+        {t("average_speechiness")}
+        <span className="text-green font-bold">{resume.mean_speechiness}</span>
+      </h3>
+      <h3 className="m-5 text-xl text-white text-center">
+        {t("average_acousticness")}
+        <span className="text-green font-bold">{resume.mean_acousticness}</span>
+      </h3>
+      <h3 className="m-5 text-xl text-white text-center">
+        {t("average_instrumentalness")}
+        <span className="text-green font-bold">
+          {resume.mean_instrumentalness}
+        </span>
+      </h3>
+      <h3 className="m-5 text-xl text-white text-center">
+        {t("average_liveness")}
+        <span className="text-green font-bold">{resume.mean_liveness}</span>
+      </h3>
+      <h3 className="m-5 text-xl text-white text-center">
+        {t("average_loudness")}
+        <span className="text-green font-bold">{resume.mean_loudness}</span>
+      </h3>
     </div>
   );
 };

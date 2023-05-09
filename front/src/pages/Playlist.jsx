@@ -122,8 +122,8 @@ const Playlist = () => {
           feature={{ name: t("meanValence"), value: playlist.mean_valence }}
         ></FeatureCard>
       </div>
-      <div className="flex justify-center">
-        <div className="bg-gray flex flex-col items-start justify-center rounded mx-10">
+      <div className="flex justify-center ">
+        <div className="bg-gray flex flex-col items-start justify-center rounded mx-10 sm:w-1/2">
           <h3 className="text-white text-xl p-4 self-center">
             {t("topArtistsInPlaylist")}
           </h3>

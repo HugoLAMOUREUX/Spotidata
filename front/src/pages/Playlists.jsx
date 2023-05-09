@@ -44,7 +44,7 @@ const Playlists = () => {
     <div className="bg-black min-h-screen m-0 p-0 flex items-center flex-col">
       <NavBar></NavBar>
 
-      <div className=" w-1/2">
+      <div className=" p-4 w-full sm:w-2/3 lg:w-1/2">
         {playlists.items.map((playlist) => (
           <PlaylistCard key={playlist.id} playlist={playlist}></PlaylistCard>
         ))}
