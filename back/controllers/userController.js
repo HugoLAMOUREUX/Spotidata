@@ -4,146 +4,160 @@ const { getTracksDetails } = require("../controllers/trackController");
 const { getMean } = require("../controllers/playListController");
 
 // Get the user's top artists
-const getUserTopArtists = async (spotifyApi) =>{
-  let artists= [];
+const getUserTopArtists = async (spotifyApi, time_rangee, nbrTracks) => {
+  let artists = [];
   let artistCount = 0;
-  await spotifyApi.getMyTopArtists()
-      .then(function(data) {
+  await spotifyApi
+    .getMyTopArtists({ time_range: time_rangee, limit: nbrTracks })
+    .then(
+      function (data) {
         //topArtists = data.body.items;
-        data.body.items.forEach(artist => {
+        data.body.items.forEach((artist) => {
           artistCount++;
-          artists.push(
-            {
-              rank: artistCount,
-              name: artist.name,
-              id: artist.id,
-              img: artist.images,
-              genres : artist.genres
-            }
-          )
+          artists.push({
+            rank: artistCount,
+            name: artist.name,
+            id: artist.id,
+            img: artist.images,
+            genres: artist.genres,
+          });
         });
-      }, function(err) {
-        console.log('Something went wrong!', err);
-      });
+      },
+      function (err) {
+        console.log("Something went wrong!", err);
+      }
+    );
   return artists;
 };
 
 // Get the user's top tracks and albums
-const getUserTopTracksAndAlbums = async (spotifyApi, time_rangee, nbrTracks) =>{
+const getUserTopTracksAndAlbums = async (
+  spotifyApi,
+  time_rangee,
+  nbrTracks
+) => {
   let topTracks = {
     Tracks: [],
-    Albums: []
+    Albums: [],
   };
 
-  await spotifyApi.getMyTopTracks({time_range:time_rangee, limit: nbrTracks})
-  .then(async function(data) {    
-    let trackCount = 0;
-    let albumCount = 0;
-    let artistCoef = nbrTracks;
+  await spotifyApi
+    .getMyTopTracks({ time_range: time_rangee, limit: nbrTracks })
+    .then(
+      async function (data) {
+        let trackCount = 0;
+        let albumCount = 0;
+        let artistCoef = nbrTracks;
 
-    //for each track in the top tracks
-    data.body.items.forEach(track => {
-
-      trackCount++;
-      let trackArtists = [];
-      //for each artist in the track
-      track.artists.forEach(artist => {
-        trackArtists.push({
-            name: artist.name,
-            id: artist.id
-          });
-      });
-
-      topTracks.Tracks.push(
-        {
-          rank: trackCount,
-          title: track.name,
-          track_id: track.id,
-          img: track.images,
-          artist: trackArtists
-        }
-      );
-
-      //if the track is in an album
-      if (track.album.album_type === "ALBUM") {
-        //if the album already exists in the list (if there is an higher track from the same album)
-        topTracks.Albums.forEach(album => {
-          if (track.album.name === album.title)
-          album.artistCoef = album.artistCoef + artistCoef;
-        });
-
-
-
-        let albumArtists = [];
-        track.album.artists.forEach(artist => {
-          albumArtists.push({
+        //for each track in the top tracks
+        data.body.items.forEach((track) => {
+          trackCount++;
+          let trackArtists = [];
+          //for each artist in the track
+          track.artists.forEach((artist) => {
+            trackArtists.push({
               name: artist.name,
-              id: artist.id
+              id: artist.id,
             });
-        });
+          });
 
-        albumCount++;
-        topTracks.Albums.push(
-          {
-            rank: albumCount,
-            title: track.album.name,
-            id: track.album.id,
+          topTracks.Tracks.push({
+            rank: trackCount,
+            title: track.name,
+            track_id: track.id,
             img: track.album.images,
-            artist: albumArtists,
-            artistCoef: artistCoef
+            artist: trackArtists,
+          });
+
+          //if the track is in an album
+          if (track.album.album_type === "ALBUM") {
+            artistCoef--;
+            //if the album already exists in the list (if there is an higher track from the same album)
+            let exists = false;
+            topTracks.Albums.forEach((album) => {
+              if (track.album.id === album.id) {
+                album.artistCoef = album.artistCoef + artistCoef;
+                exists = true;
+              }
+            });
+            if (exists) {
+              return;
+            }
+
+            let albumArtists = [];
+            track.album.artists.forEach((artist) => {
+              albumArtists.push({
+                name: artist.name,
+                id: artist.id,
+              });
+            });
+
+            albumCount++;
+            topTracks.Albums.push({
+              rank: albumCount,
+              title: track.album.name,
+              id: track.album.id,
+              img: track.album.images,
+              artist: albumArtists,
+              artistCoef: artistCoef,
+            });
           }
-        );
+        });
+      },
+      function (err) {
+        console.log("error", err);
       }
-      artistCoef--;
-    });
-  }, function(err) {
-
-    console.log("error", err)
-    throw new Error("Something went wrong");
-
-  });
+    );
 
   //order the albums by artistCoef
-  topTracks.Albums.sort((a, b) => (a.artistCoef < b.artistCoef) ? 1 : -1);
-  //delete the artistCoef
-  topTracks.Albums.forEach(album => {
+  topTracks.Albums.sort((a, b) => (a.artistCoef < b.artistCoef ? 1 : -1));
+  //delete the artistCoef and sync the rank
+  let count = 1;
+  topTracks.Albums.forEach((album) => {
     delete album.artistCoef;
+    album.rank = count;
+    count++;
   });
 
   return topTracks;
 };
 
 // Get the most listened tracks, albums and artists of the user
-const getUserTop = async (req,res) => {
+const getUserTop = async (req, res) => {
   const spotifyApi = new SpotifyWebApi({
-    accessToken: req.body.access_token,
+    accessToken: req.query.access_token,
   });
-
 
   let topTracks = {
     Tracks: [],
     Albums: [],
-    Artists: []
+    Artists: [],
   };
 
-  let tracksAndAlubm = await getUserTopTracksAndAlbums(spotifyApi, req.body.time_period, 50);
-  if(!tracksAndAlubm || !tracksAndAlubm.Tracks || !tracksAndAlubm.Albums){
+  let tracksAndAlubm = await getUserTopTracksAndAlbums(
+    spotifyApi,
+    req.query.time_period,
+    50
+  );
+  if (!tracksAndAlubm || !tracksAndAlubm.Tracks || !tracksAndAlubm.Albums) {
     res.status(400);
-    throw new Error("Something went wrong");
   }
 
   topTracks.Tracks = tracksAndAlubm.Tracks;
   topTracks.Albums = tracksAndAlubm.Albums;
 
-  topTracks.Artists = await getUserTopArtists(spotifyApi);
+  topTracks.Artists = await getUserTopArtists(
+    spotifyApi,
+    req.query.time_period,
+    50
+  );
 
   //delete the genres from the artists
-  topTracks.Artists.forEach(artist => {
+  topTracks.Artists.forEach((artist) => {
     delete artist.genres;
   });
 
   res.status(200).json(topTracks);
-  
 };
 
 // Get the most listened genre of the user
@@ -152,16 +166,17 @@ const getAnalysis = async (req, res) => {
     accessToken: req.query.access_token,
   });
 
-  let artists = await getUserTopArtists(spotifyApi);
-  let score = artists.length, rank = 1;
+  let artists = await getUserTopArtists(spotifyApi, req.query.time_range);
+  let score = artists.length,
+    rank = 1;
   let topGenre = [];
 
-  artists.forEach(artist => {
-    artist.genres.forEach(genre => {
+  artists.forEach((artist) => {
+    artist.genres.forEach((genre) => {
       exists = false;
-      topGenre.forEach(g => {
+      topGenre.forEach((g) => {
         if (g.name === genre) {
-          exists = true
+          exists = true;
           g.score += score;
         }
       });
@@ -170,20 +185,20 @@ const getAnalysis = async (req, res) => {
 
       topGenre.push({
         name: genre,
-        score: score
+        score: score,
       });
     });
     score--;
   });
 
-  topGenre.sort(function(a,b) {
-      return b.score - a.score;
+  topGenre.sort(function (a, b) {
+    return b.score - a.score;
   });
 
-  topGenre.forEach(genre => {
-      genre.rank = rank;
-      delete genre.score;
-      rank++;
+  topGenre.forEach((genre) => {
+    genre.rank = rank;
+    delete genre.score;
+    rank++;
   });
 
   res.status(200).json(topGenre);
@@ -235,18 +250,22 @@ const getUserPlaylists = async (req, res) => {
   res.status(200).json({ items: allPlaylists });
 };
 
-//get the user's resume : 
+//get the user's resume :
 // - average of all the features of all the tracks of his most listened tracks
 const getResume = async (req, res) => {
   const spotifyApi = new SpotifyWebApi({
     accessToken: req.query.access_token,
   });
 
-  let tracksAndAlubm = await getUserTopTracksAndAlbums(spotifyApi, req.body.time_period, 50);
+  let tracksAndAlubm = await getUserTopTracksAndAlbums(
+    spotifyApi,
+    req.query.time_period,
+    50
+  );
   delete tracksAndAlubm.Albums;
 
   let tracks_ids = [];
-  tracksAndAlubm.Tracks.forEach(track => {
+  tracksAndAlubm.Tracks.forEach((track) => {
     tracks_ids.push(track.track_id);
   });
 
@@ -272,7 +291,6 @@ const getResume = async (req, res) => {
   return_value.genres = {};
   return_value.artists = {};
 
-  
   return_value = await getTracksDetails(
     spotifyApi,
     tracks_ids,
@@ -282,7 +300,7 @@ const getResume = async (req, res) => {
 
   delete return_value.artists;
 
-  return_value = await getMean(return_value,50);
+  return_value = await getMean(return_value, 50);
 
   res.status(200).json(return_value);
 };

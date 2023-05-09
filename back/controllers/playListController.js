@@ -71,7 +71,6 @@ const getPlaylistTracks = async (
             count++;
           });
         }
-        console.log(data.body);
         return data.body;
       },
       function (err) {
@@ -118,7 +117,7 @@ const getTopTrends = async (req, res) => {
 const getPlaylistDetails = async (req, res) => {
   if (!req.query.access_token || !req.query.playlist_id) {
     res.status(400);
-  } 
+  }
   const spotifyApi = new SpotifyWebApi({
     accessToken: req.query.access_token,
   });
@@ -188,40 +187,60 @@ const getPlaylistDetails = async (req, res) => {
   }
 
   //calculate the mean of each feature
-  return_value = getMean(return_value,total);
+  return_value = getMean(return_value, total);
 
   res.status(200).json(return_value);
 };
 
 //is used to get the means for each feature (used by getPlaylistDetails, and getResume)
-const getMean = (return_value,total) => {
-  return_value.mean_danceability = (
-    return_value.mean_danceability / return_value.nbr_tracks_audio_ft
-  ).toFixed(2);
-  return_value.mean_energy = (
-    return_value.mean_energy / return_value.nbr_tracks_audio_ft
-  ).toFixed(2);
-  return_value.mean_loudness = (
-    return_value.mean_loudness / return_value.nbr_tracks_audio_ft
-  ).toFixed(2);
-  return_value.mean_speechiness = (
-    return_value.mean_speechiness / return_value.nbr_tracks_audio_ft
-  ).toFixed(2);
-  return_value.mean_acousticness = (
-    return_value.mean_acousticness / return_value.nbr_tracks_audio_ft
-  ).toFixed(2);
-  return_value.mean_instrumentalness = (
-    return_value.mean_instrumentalness / return_value.nbr_tracks_audio_ft
-  ).toFixed(2);
-  return_value.mean_liveness = (
-    return_value.mean_liveness / return_value.nbr_tracks_audio_ft
-  ).toFixed(2);
-  return_value.mean_valence = (
-    return_value.mean_valence / return_value.nbr_tracks_audio_ft
-  ).toFixed(2);
-  return_value.mean_tempo = (
-    return_value.mean_tempo / return_value.nbr_tracks_audio_ft
-  ).toFixed(2);
+const getMean = (return_value, total) => {
+  return_value.mean_danceability =
+    Math.round(
+      (
+        return_value.mean_danceability / return_value.nbr_tracks_audio_ft
+      ).toFixed(2) * 100
+    ) + " %";
+  return_value.mean_energy =
+    Math.round(
+      (return_value.mean_energy / return_value.nbr_tracks_audio_ft).toFixed(2) *
+        100
+    ) + " %";
+  return_value.mean_loudness =
+    (return_value.mean_loudness / return_value.nbr_tracks_audio_ft).toFixed(2) +
+    " dB";
+  return_value.mean_speechiness =
+    Math.round(
+      (
+        return_value.mean_speechiness / return_value.nbr_tracks_audio_ft
+      ).toFixed(2) * 100
+    ) + " %";
+  return_value.mean_acousticness =
+    Math.round(
+      (
+        return_value.mean_acousticness / return_value.nbr_tracks_audio_ft
+      ).toFixed(2) * 100
+    ) + " %";
+  return_value.mean_instrumentalness =
+    Math.round(
+      (
+        return_value.mean_instrumentalness / return_value.nbr_tracks_audio_ft
+      ).toFixed(2) * 100
+    ) + " %";
+  return_value.mean_liveness =
+    Math.round(
+      (return_value.mean_liveness / return_value.nbr_tracks_audio_ft).toFixed(
+        2
+      ) * 100
+    ) + " %";
+  return_value.mean_valence =
+    Math.round(
+      (return_value.mean_valence / return_value.nbr_tracks_audio_ft).toFixed(
+        2
+      ) * 100
+    ) + " %";
+  return_value.mean_tempo =
+    (return_value.mean_tempo / return_value.nbr_tracks_audio_ft).toFixed(2) +
+    " BPM";
   return_value.mean_time_signature = (
     return_value.mean_time_signature / return_value.nbr_tracks_audio_ft
   ).toFixed(2);
@@ -231,15 +250,17 @@ const getMean = (return_value,total) => {
   return_value.mean_mode = (
     return_value.mean_mode / return_value.nbr_tracks_audio_ft
   ).toFixed(2);
-  return_value.mean_duration_s = (
-    return_value.mean_duration_ms /
-    return_value.nbr_tracks_audio_ft /
-    1000
-  ).toFixed(2);
+  return_value.mean_duration_s =
+    (
+      return_value.mean_duration_ms /
+      return_value.nbr_tracks_audio_ft /
+      1000
+    ).toFixed(2) + " s";
 
-  return_value.mean_popularity = (
-    return_value.mean_popularity / return_value.nbr_tracks_get_norm
-  ).toFixed(2);
+  return_value.mean_popularity =
+    Math.round(
+      return_value.mean_popularity / return_value.nbr_tracks_get_norm
+    ) + " %";
 
   //delete for more clarity
   delete return_value.nbr_tracks_audio_ft;
@@ -249,7 +270,7 @@ const getMean = (return_value,total) => {
   return_value.nbr_tracks = total;
 
   //if there's no artists end the function
-  if(!return_value.artists){
+  if (!return_value.artists) {
     return return_value;
   }
 

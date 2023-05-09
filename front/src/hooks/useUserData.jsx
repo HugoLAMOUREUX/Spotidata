@@ -36,7 +36,6 @@ const useUserData = () => {
     let params = getHashParams();
     let access_token = params.access_token,
       state = params.state;
-
     if (access_token) {
       //keep the access token in the state
       setAccessToken(access_token);
@@ -45,13 +44,20 @@ const useUserData = () => {
       setState(state);
     } else {
       //if the user has refused the connexion, redirect to the home page
-      if (accessToken === "") {
+      if (access_token === "") {
         alert(t("errorAuthentication"));
         navigate("/");
       }
     }
   };
-  return { updateToken };
+
+  const checkAuthentication = () => {
+    if (accessToken === "") {
+      alert(t("errorAuthentication"));
+      navigate("/");
+    }
+  };
+  return { updateToken, checkAuthentication };
 };
 
 export default useUserData;

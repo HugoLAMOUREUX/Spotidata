@@ -7,10 +7,10 @@ const NavBar = () => {
   const { t } = useTranslation();
   return (
     <div className="flex mb-4 bg-green w-full justify-center items-center flex-wrap">
-      <div className="flex justify-center align-center">
+      <div className="flex justify-center align-center flex-wrap">
         {[
           [t("trends"), "/trends"],
-          [t("summary"), "/callback"],
+          [t("summary"), "/resume"],
           [t("tops"), "/tops"],
           [t("analysis"), "/analysis"],
           [t("playlists"), "/playlists"],

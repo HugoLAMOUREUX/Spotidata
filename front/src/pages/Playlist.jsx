@@ -7,11 +7,13 @@ import Axios from "axios";
 import { useContext } from "react";
 import FeatureCard from "../components/cards/FeatureCard";
 import { useTranslation } from "react-i18next";
+import useUserData from "../hooks/useUserData";
 
 const Playlist = () => {
   const { t } = useTranslation();
   const params = useParams();
   const { accessToken } = useContext(UserContext);
+  const { checkAuthentication } = useUserData();
   const id = params.id;
   const name = decodeURIComponent(params.name);
   const owner_name = decodeURIComponent(params.owner_name);
@@ -31,6 +33,10 @@ const Playlist = () => {
       return res.data;
     });
   });
+
+  useEffect(() => {
+    checkAuthentication();
+  }, []);
 
   if (isLoading)
     return (
@@ -116,8 +122,8 @@ const Playlist = () => {
           feature={{ name: t("meanValence"), value: playlist.mean_valence }}
         ></FeatureCard>
       </div>
-      <div className="flex justify-center">
-        <div className="bg-gray flex flex-col items-start justify-center rounded mx-10">
+      <div className="flex justify-center ">
+        <div className="bg-gray flex flex-col items-start justify-center rounded mx-10 sm:w-1/2">
           <h3 className="text-white text-xl p-4 self-center">
             {t("topArtistsInPlaylist")}
           </h3>

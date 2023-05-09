@@ -11,6 +11,7 @@ import Analysis from "./pages/Analysis";
 import Playlists from "./pages/Playlists";
 import Playlist from "./pages/Playlist";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Callback from "./pages/Callback";
 
 function App() {
   const client = new QueryClient();
@@ -20,7 +21,12 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home></Home>} exact></Route>
-            <Route path="/callback" element={<Summary></Summary>} exact></Route>
+            <Route
+              path="/callback"
+              element={<Callback></Callback>}
+              exact
+            ></Route>
+            <Route path="/resume" element={<Summary></Summary>} exact></Route>
             <Route path="/trends" element={<Trends></Trends>} exact></Route>
             <Route path="/tops" element={<Tops></Tops>} exact></Route>
             <Route

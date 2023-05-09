@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import TopTrends from "../components/TopTrends";
 import { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 import useUserData from "../hooks/useUserData";
@@ -12,7 +11,7 @@ import { useTranslation } from "react-i18next";
 const Playlists = () => {
   const { t } = useTranslation();
   const { accessToken } = useContext(UserContext);
-  const { updateToken } = useUserData();
+  const { checkAuthentication } = useUserData();
   const {
     data: playlists,
     isLoading,
@@ -30,7 +29,7 @@ const Playlists = () => {
   });
 
   useEffect(() => {
-    updateToken();
+    checkAuthentication();
   }, []);
 
   if (isLoading)
@@ -45,9 +44,9 @@ const Playlists = () => {
     <div className="bg-black min-h-screen m-0 p-0 flex items-center flex-col">
       <NavBar></NavBar>
 
-      <div className=" w-1/2">
+      <div className=" p-4 w-full sm:w-2/3 lg:w-1/2">
         {playlists.items.map((playlist) => (
-          <PlaylistCard playlist={playlist}></PlaylistCard>
+          <PlaylistCard key={playlist.id} playlist={playlist}></PlaylistCard>
         ))}
       </div>
     </div>

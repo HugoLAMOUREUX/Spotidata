@@ -37,6 +37,30 @@ i18next
           loading: "Chargement",
           errorAuthentication:
             "Il y a eu une erreur lors de l'authentification",
+          short_term: "4 dernières semaines",
+          medium_term: "6 derniers mois",
+          long_term: "Tout les temps",
+          average_hapiness:
+            "Niveau de bonheur moyen dans tes sons les plus écoutés : ",
+          obscurity_score: "Ton score d'obscurité (popularité moyenne) : ",
+          average_danceability:
+            "Ton score de danceur (niveau dansant moyen) : ",
+          top_track: "Musique la plus écoutée",
+          top_artist: "Artiste le plus écouté",
+          top_album: "Album le plus écouté",
+          top_genre: "Ton genre le plus écouté : ",
+          average_duration: "Durée moyenne de tes sons les plus écoutés : ",
+          average_energy: "Energie moyenne de tes sons les plus écoutés : ",
+          average_instrumentalness:
+            "Niveau d'instrumentalité moyen de tes sons les plus écoutés : ",
+          average_liveness:
+            "Présence d'audience en moyenne dans tes sons les plus écoutes : ",
+          average_loudness:
+            "Intensité sonore moyenne de tes sons les plus écoutes : ",
+          average_speechiness:
+            "Présence de paroles en moyenne dans tes sons les plus écoutes : ",
+          average_acousticness:
+            "Pourcentage de musiques acoustiques (absence d'instruments éléctroniques modernes) en moyenne dans tes sons les plus écoutes : ",
         },
       },
       en: {
@@ -66,6 +90,26 @@ i18next
           topArtistsInPlaylist: "Top artists in playlist",
           loading: "Loading",
           errorAuthentication: "There was an error during the authentication",
+          short_term: "Last 4 weeks",
+          medium_term: "Last 6 months",
+          long_term: "All time",
+          average_hapiness: "Average happiness of your top songs : ",
+          obscurity_score:
+            "Your obscurity Score (average popularity of your top songs) : ",
+          average_danceability:
+            "Your dancer score (average danceability of your top songs) : ",
+          top_track: "Top track",
+          top_artist: "Top artist",
+          top_album: "Top album",
+          top_genre: "Your top genre : ",
+          average_duration: "Average duration of your top songs : ",
+          average_energy: "Average energy of your top songs : ",
+          average_instrumentalness:
+            "Average instrumentalness of your top songs : ",
+          average_liveness: "Average liveness of your top songs : ",
+          average_loudness: "Average loudness of your top songs : ",
+          average_speechiness: "Average speechiness of your top songs : ",
+          average_acousticness: "Average acousticness of your top songs : ",
         },
       },
       es: {
@@ -94,7 +138,8 @@ i18next
           meanMode: "Modo medio",
           topArtistsInPlaylist: "Top artistas en lista de reproducción",
           loading: "Cargando",
-          errorAuthentication: "Se ha producido un error durante la autenticación",
+          errorAuthentication:
+            "Se ha producido un error durante la autenticación",
         },
       },
       ru: {
