@@ -135,7 +135,7 @@ const Summary = () => {
         </div>
         {/* Top Album */}
         <div className="bg-gray py-2 px-5 rounded flex flex-col items-center justify-center m-5 flex-1">
-          <h3 className="text-white text-center">{t("top_track")}</h3>
+          <h3 className="text-white text-center">{t("top_album")}</h3>
           <img
             src={categories.Albums[0]["img"][0].url}
             width="80"
