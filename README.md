@@ -6,14 +6,17 @@ Web application linked to Spotify that shows some statistics about your music ta
 
 ### Built with
 
-Back end built with Node.Js and the framework Express, Front end with React.Js<br>
-Unit testing with Jest
+Back end built with Node.Js and the framework Express, Front end with React.Js. See below the architecture of the project with the technologies involved.<br>
+
 
 [![React][React.js]][React-url]
 
 [![Node][Node.js]][Node-url]
 
-[![Jest][Jest.js]][Jest-url]
+
+<img align="center" height="300" src="./images/Architecture.jpg">
+<br/>
+<br/>
 
 ## Getting started
 
@@ -24,6 +27,12 @@ Unit testing with Jest
 ```sh
 npm install npm@latest -g
 ```
+
+* Ask us to add you to the authorized users : as we use the development node of the Spotify API, we have to say to Spotify which user will use the application so that they allow him to make requests
+```sh
+Send the email of your Spotify account to hugo.lamoureux18@gmail.com
+```
+  
 
 ### Installation
 
@@ -53,6 +62,38 @@ cd front
 npm i
 npm start
 ```
+
+## Usage
+
+When you open the website you'll arrive on the home page and you'll be able to connect your account to spotify and give the authorizations :
+<br/>
+
+<img align="center" height="300" src="./images/1Guest.PNG">
+<br/>
+<br/>
+
+<img align="center" height="300" src="./images/2Authorizations.PNG"> 
+
+Then you can see all your statistics :
+<br/>
+
+<img align="center" height="300" src="./images/3Summary.PNG"> 
+<br/>
+<br/>
+
+<img align="center" height="300" src="./images/4Tops.PNG"> 
+<br/>
+<br/>
+
+<img align="center" height="300" src="./images/5Genres.PNG"> 
+<br/>
+<br/>
+
+<img align="center" height="300" src="./images/6Playlists.PNG"> 
+<br/>
+<br/>
+
+<img align="center" height="300" src="./images/7Playlist.PNG"> 
 
 ## Contributing
 
