@@ -26,7 +26,7 @@ Back end built with Node.Js and the framework Express, Front end with React.Js. 
 npm install npm@latest -g
 ```
 
-* Ask us to add you to the authorized users : as we use the development node of the Spotify API, we have to say to Spotify which user will use the application so that they allow him to make requests
+* Ask us to add you to the authorized users : as we use the development mode of the Spotify API, we have to say to Spotify which user will use the application so that they allow him to make requests
 ```sh
 Send the email of your Spotify account to hugo.lamoureux18@gmail.com
 ```
