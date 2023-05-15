@@ -15,8 +15,6 @@ Back end built with Node.Js and the framework Express, Front end with React.Js. 
 
 
 <img align="center" height="300" src="./images/Architecture.jpg">
-<br/>
-<br/>
 
 ## Getting started
 
