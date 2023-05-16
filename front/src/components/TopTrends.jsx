@@ -18,7 +18,6 @@ const TopTrends = () => {
       method: "GET",
       url: "http://localhost:5000/api/spotify/getTopTrends",
     }).then((res) => {
-      console.log(res.data)
       return res.data;
     });
   });

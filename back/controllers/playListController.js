@@ -290,7 +290,6 @@ const getMean = (return_value, total) => {
       return_value.mean_popularity / return_value.nbr_tracks_get_norm
     ) + " %";
 
-
   //delete for more clarity
   delete return_value.nbr_tracks_audio_ft;
   delete return_value.nbr_tracks_get_norm;
