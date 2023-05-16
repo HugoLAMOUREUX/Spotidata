@@ -17,7 +17,7 @@ const Login = () => {
 
   // when the login to Spotify button is clicked, redirect to the spotify login page
   const handleClick = () => {
-    var client_id = "871c09e08e6e47e29036704256543a4a"; // Your client id
+    var client_id = "495efa16164e4c0c8f8c1cab0c580ae3"; // Your client id
     var redirect_uri = "http://localhost:5173/callback"; // Your redirect uri
 
     var state = generateRandomString(16);
@@ -30,7 +30,7 @@ const Login = () => {
     url += "&scope=" + encodeURIComponent(scope);
     url += "&redirect_uri=" + encodeURIComponent(redirect_uri);
     url += "&state=" + encodeURIComponent(state);
-
+    // console.log(url);
     window.location = url;
   };
 

@@ -9,6 +9,7 @@ function classNames(...classes) {
 }
 
 const TopTrends = () => {
+  // console.log('he,,o0');
   const {
     data: trends,
     isLoading,
@@ -18,6 +19,7 @@ const TopTrends = () => {
       method: "GET",
       url: "http://localhost:5000/api/spotify/getTopTrends",
     }).then((res) => {
+      console.log(res.data)
       return res.data;
     });
   });

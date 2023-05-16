@@ -75,7 +75,7 @@ const getTracksDetails = async (spotifyApi, tracks_id, return_value) => {
           return_value.mean_valence += track.valence;
           return_value.mean_tempo += track.tempo;
           return_value.mean_time_signature += track.time_signature;
-          return_value.mean_key += track.key;
+          track.key>=0?return_value.key_array[track.key]++:null;
           return_value.mean_mode += track.mode;
           return_value.mean_duration_ms += track.duration_ms;
         }
