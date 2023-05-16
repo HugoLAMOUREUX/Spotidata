@@ -278,7 +278,6 @@ const getMean = (return_value, total) => {
   return_value.mean_mode = (
     return_value.mean_mode / return_value.nbr_tracks_audio_ft
   ).toFixed(2);
-  console.log(return_value.key_array);
   return_value.mean_duration_s =
     (
       return_value.mean_duration_ms /

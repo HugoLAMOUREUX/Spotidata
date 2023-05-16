@@ -9,7 +9,6 @@ function classNames(...classes) {
 }
 
 const TopTrends = () => {
-  // console.log('he,,o0');
   const {
     data: trends,
     isLoading,
