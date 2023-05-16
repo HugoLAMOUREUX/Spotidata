@@ -61,6 +61,21 @@ npm i
 npm start
 ```
 
+
+## Debug process
+
+If you want to test the back end functions, you'll have to do the following :
+
+1. Install Postman.
+2. Run the front-end in VS-Code, then connect with Spotify on Spotidata.
+3. Still in Spotidata, to access your token, go to the developer mode of your browser and in the console your access token will be printed, copy it.
+4. Now go back to VS-Code and launch the back-end. (you can launch it before, it doesn't change anything).
+5. On Postman there are several ways to send requests, select "GET" if not already selected.
+6. In the url type this `http://127.0.0.1:5000/api/spotify/NameOfWhatYouWantToTest`, eg : `http://127.0.0.1:5000/api/spotify/GetAlbumDetails` 
+7. Now you need to add your access token to the request; to do this, under the URL, in the Params tab, click on the first case and add the key as "access_token" and as value your access token. (And check the line)
+8. If you have other parameters to enter, such as the album id, proceed in the same way: enter the key "album_id" and the value of the album id (parameter `req.query.xxx`).
+Now send the query and see the result.
+
 ## Usage
 
 When you open the website you'll arrive on the home page and you'll be able to connect your account to spotify and give the authorizations :
