@@ -281,7 +281,7 @@ const getResume = async (req, res) => {
   return_value.mean_valence = 0;
   return_value.mean_tempo = 0;
   return_value.mean_time_signature = 0;
-  return_value.mean_key = 0;
+  return_value.key_array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   return_value.mean_mode = 0;
   return_value.mean_duration_ms = 0;
   return_value.mean_popularity = 0;
