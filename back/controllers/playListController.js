@@ -134,7 +134,8 @@ const getPlaylistDetails = async (req, res) => {
   return_value.mean_valence = 0;
   return_value.mean_tempo = 0;
   return_value.mean_time_signature = 0;
-  return_value.mean_key = 0;
+  return_value.key_array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  return_value.keys='',
   return_value.mean_mode = 0;
   return_value.mean_duration_ms = 0;
   return_value.mean_popularity = 0;
@@ -191,6 +192,36 @@ const getPlaylistDetails = async (req, res) => {
 
   res.status(200).json(return_value);
 };
+function mapKeyToPitch(key) {
+  switch (key) {
+    case 0:
+      return "C";
+    case 1:
+      return "C#";
+    case 2:
+      return "D";
+    case 3:
+      return "D#";
+    case 4:
+      return "E";
+    case 5:
+      return "F";
+    case 6:
+      return "F#";
+    case 7:
+      return "G";
+    case 8:
+      return "G#";
+    case 9:
+      return "A";
+    case 10:
+      return "A#";
+    case 11:
+      return "B";
+   
+  }
+}
+
 
 //is used to get the means for each feature (used by getPlaylistDetails, and getResume)
 const getMean = (return_value, total) => {
@@ -244,9 +275,6 @@ const getMean = (return_value, total) => {
   return_value.mean_time_signature = (
     return_value.mean_time_signature / return_value.nbr_tracks_audio_ft
   ).toFixed(2);
-  return_value.mean_key = (
-    return_value.mean_key / return_value.nbr_tracks_audio_ft
-  ).toFixed(2);
   return_value.mean_mode = (
     return_value.mean_mode / return_value.nbr_tracks_audio_ft
   ).toFixed(2);
@@ -266,6 +294,17 @@ const getMean = (return_value, total) => {
   delete return_value.nbr_tracks_audio_ft;
   delete return_value.nbr_tracks_get_norm;
   delete return_value.mean_duration_ms;
+
+  // Finding maximum Ocuurence of key from playlist , If two or more keys have maximum occurence then we return all of them 
+  var maxOccurence=Math.max(...return_value.key_array);
+  return_value.key_array.map((item,index)=>{
+      if(item===maxOccurence && maxOccurence>0){
+         return_value.keys+=mapKeyToPitch(index)+' / ';
+      }
+  })
+  return_value.keys===''?return_value.keys='No keys detected':return_value.keys=return_value.keys.slice(0,-2)
+
+
 
   return_value.nbr_tracks = total;
 
