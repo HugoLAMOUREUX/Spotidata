@@ -89,7 +89,7 @@ const Playlist = () => {
           }}
         ></FeatureCard>
         <FeatureCard
-          feature={{ name: t("Most Common Key"), value: playlist.keys }}
+          feature={{ name: t("meanKey"), value: playlist.keys }}
         ></FeatureCard>
         <FeatureCard
           feature={{ name: t("meanLiveness"), value: playlist.mean_liveness }}
